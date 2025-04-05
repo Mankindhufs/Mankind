@@ -1,0 +1,6 @@
+__pycache__/
+.env
+uploads/
+*.pyc
+node_modules/
+build/
