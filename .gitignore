@@ -4,3 +4,5 @@ uploads/
 *.pyc
 node_modules/
 build/
+/backend/uploads/*
+!/backend/uploads/.gitkeep
