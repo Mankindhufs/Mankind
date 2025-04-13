@@ -15,4 +15,4 @@ app.register_blueprint(index_bp, url_prefix="/api/index")
 app.register_blueprint(scenario_bp, url_prefix="/api/scenario")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
