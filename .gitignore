@@ -7,3 +7,5 @@ build/
 /backend/uploads/*
 !/backend/uploads/.gitkeep
 *.pem
+
+.DS_Store
