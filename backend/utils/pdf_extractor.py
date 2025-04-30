@@ -19,3 +19,14 @@ def extract_text_from_pdf(file_path):
         return ""
 
     return text
+
+# text_path = "./신한_코스피200커버드콜_상품설명서.pdf"
+
+# extract_text_from_pdf(text_path)
+
+
+if __name__ == "__main__":
+    text_path = "/Users/Star1/Desktop/Mankind/backend/utils/신한_코스피200커버드콜_상품설명서.pdf"
+    extracted = extract_text_from_pdf(text_path)
+    print(extracted)                # <- 여기를 추가
+    print(f"총 {len(extracted)}자 추출됨")  # 선택사항: 길이 확인용
