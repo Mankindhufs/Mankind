@@ -29,6 +29,6 @@ def upload_pdf():
     # 5. JSON 응답 반환
     return jsonify({
         "scenario_result": scenario,
-        "filename": pdf_file.filename,
-        "text_snippet": extracted_text[:300]  # 미리보기용
+        #"filename": pdf_file.filename,
+        #"text_snippet": extracted_text[:300]  # 미리보기용
     })
