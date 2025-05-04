@@ -11,6 +11,7 @@ module.exports = {
     'airbnb/hooks',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:plugin:prettier/recommended', // 설정한 .prettierrc을 기반으로 해당 형식이 어긋나면 eslint에서 에러 처리
   ],
