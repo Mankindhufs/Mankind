@@ -13,20 +13,19 @@ def generate_scenario_from_text(text):
 
         출력 예시:
         {
-        "final_return": 876500.0,
-        "status": "Principal loss",
+        
         "details": [
             {"month": 6, "price": 950, "threshold": 900, "passed": true},
             {"month": 12, "price": 920, "threshold": 900, "passed": true},
             {"month": 18, "price": 870, "threshold": 850, "passed": true},
             ...
-        ],
-        "message": "Principal loss: 876500.00 KRW due to worst asset performance."
+        ]
         }
 
         조건:
         - 평가 시점은 6개월마다 총 6회이며, 정확히 6, 12, 18, 24, 30, 36개월입니다.
         - GPT가 임의로 5, 11, 17 등으로 추론하지 말고, 약관 기준 월을 그대로 사용해주세요.
+        - 출력 예시에 적힌 price, threshold, passed 값을 그대로 따라하지 말고, 업로드 된 pdf에서 직접 찾아서 알맞은 값을 적으세요.
         - 함수 코드 없이 JSON만 반환해주세요.
         - Markdown 코드블록 없이 순수 JSON 텍스트로 반환해주세요.
 
