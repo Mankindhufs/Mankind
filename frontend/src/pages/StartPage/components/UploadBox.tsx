@@ -1,15 +1,118 @@
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import ConfirmButton from './ConfirmButton';
+import { useRef, useState } from 'react';
+import FileInfo from './FileInfo';
+
+export interface FileInfoProps {
+  name: string;
+  file: File | null;
+}
 
 const UploadBox = () => {
+  const [isActive, setIsActive] = useState(false);
+  const [uploadedInfo, setUploadedInfo] = useState<FileInfoProps | null>(null);
+  let inputRef = useRef<HTMLInputElement>(null);
+
+  const handleDragEnter = () => {
+    setIsActive(true);
+  };
+
+  //핵심핵심...
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    const currentTarget = e.currentTarget;
+    const relatedTarget = e.relatedTarget as Node | null;
+
+    // 관련 타겟이 없거나 (예: 브라우저 밖으로 나가는 경우)
+    // 관련 타겟이 현재 영역 밖이면 setIsActive(false)
+    if (!relatedTarget || !currentTarget.contains(relatedTarget)) {
+      setIsActive(false);
+    }
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+  };
+
+  const validFile = (file: File) => {
+    const { name } = file;
+    const fileType = file.type;
+
+    if (!fileType.includes('pdf')) {
+      alert('pdf 형식의 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    setUploadedInfo({ name, file });
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsActive(false);
+
+    const file = e.dataTransfer.files[0];
+
+    if (file) {
+      validFile(file);
+    }
+  };
+
+  // 클릭해서 업로드
+  const handleUpload = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const file = target.files?.[0];
+
+    if (file) {
+      validFile(file);
+      target.value = '';
+    }
+  };
+
+  const handleDeleteFile = () => {
+    if (inputRef.current) {
+      setUploadedInfo(null);
+      inputRef.current.value = '';
+    }
+  };
+
   return (
-    <label
-      htmlFor=''
-      className='w-[520px] h-[590px] bg-grayBackground border-2 border-dashed border-grayBorder min-w-[320px] rounded-[20px] flex flex-col justify-center items-center gap-[40px] text-grayIcon text-[20px] cursor-pointer'
-    >
-      <HiOutlineDocumentArrowUp size={120} className='stroke-[1.5]' />
-      Choose a file or drag it here!
-      <input type='file' className='hidden' accept='.pdf' />
-    </label>
+    <div className='flex flex-col items-center gap-10'>
+      <label
+        htmlFor='file'
+        className={`w-[520px] h-[590px]  border-2 border-dashed  min-w-[320px] rounded-[20px] flex flex-col justify-center items-center gap-[40px] overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+      >
+        <input
+          type='file'
+          className='hidden'
+          onChange={handleUpload}
+          id='file'
+          accept='.pdf'
+          ref={inputRef}
+        />
+        {uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />}
+        {!uploadedInfo && (
+          <>
+            <HiOutlineDocumentArrowUp size={120} className='stroke-[1.5]' />
+            <p className='text-center'>
+              클릭해서 파일을 선택하거나 드래그해주세요.
+            </p>
+          </>
+        )}
+      </label>
+      {uploadedInfo && (
+        <div className='flex gap-6'>
+          <button
+            className='w-48 h-14 rounded-[50px] border-[1px] border-solid border-black'
+            onClick={handleDeleteFile}
+          >
+            삭제
+          </button>
+          <ConfirmButton />
+        </div>
+      )}
+    </div>
   );
 };
 
