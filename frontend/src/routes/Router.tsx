@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
 import StartPage from '../pages/StartPage';
 import Layout from '../Layout';
+import VerifyPage from '../pages/VerifyPage';
 
 const router = createBrowserRouter(
   [
@@ -11,6 +12,11 @@ const router = createBrowserRouter(
         {
           path: '/',
           element: <StartPage />,
+          errorElement: <div>404 Not Found</div>,
+        },
+        {
+          path: '/',
+          element: <VerifyPage />,
           errorElement: <div>404 Not Found</div>,
         },
         {
