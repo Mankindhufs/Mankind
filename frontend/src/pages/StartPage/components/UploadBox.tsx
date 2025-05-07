@@ -17,7 +17,6 @@ const UploadBox = () => {
     setIsActive(true);
   };
 
-  //핵심핵심...
   const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
     const currentTarget = e.currentTarget;
     const relatedTarget = e.relatedTarget as Node | null;
@@ -32,6 +31,7 @@ const UploadBox = () => {
     e.preventDefault();
   };
 
+  // 파일 형식이 pdf인지 확인 후 저장하는 함수
   const validFile = (file: File) => {
     const { name } = file;
     const fileType = file.type;
@@ -66,6 +66,7 @@ const UploadBox = () => {
     }
   };
 
+  // 선택한 파일 취소
   const handleDeleteFile = () => {
     if (inputRef.current) {
       setUploadedInfo(null);
