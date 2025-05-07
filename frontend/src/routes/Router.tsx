@@ -15,7 +15,7 @@ const router = createBrowserRouter(
           errorElement: <div>404 Not Found</div>,
         },
         {
-          path: '/',
+          path: '/verify',
           element: <VerifyPage />,
           errorElement: <div>404 Not Found</div>,
         },
