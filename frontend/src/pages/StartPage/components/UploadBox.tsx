@@ -109,7 +109,7 @@ const UploadBox = () => {
           >
             삭제
           </button>
-          <ConfirmButton />
+          <ConfirmButton data={uploadedInfo} />
         </div>
       )}
     </div>
