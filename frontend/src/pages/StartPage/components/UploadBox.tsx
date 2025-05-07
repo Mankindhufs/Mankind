@@ -74,10 +74,10 @@ const UploadBox = () => {
   };
 
   return (
-    <div className='flex flex-col items-center gap-4 w-[100%] h-[45%] max-h-[400px]'>
+    <div className='flex flex-col items-center gap-4 w-[100%] h-[45%] min-h-72 max-h-[400px]'>
       <label
         htmlFor='file'
-        className={`w-[100%] h-[100%] border-2 border-dashed box-border p-7 min-w-[320px] rounded-[20px] flex flex-col justify-center items-center gap-[40px] overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
+        className={`w-[100%] h-[100%] border-2 border-dashed box-border p-7 min-w-[320px] rounded-[20px] flex flex-col justify-center items-center gap-8 overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
