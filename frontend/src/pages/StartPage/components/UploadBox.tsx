@@ -2,6 +2,8 @@ import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
 import ConfirmButton from './ConfirmButton';
 import { useRef, useState } from 'react';
 import FileInfo from './FileInfo';
+import usePostFile from '../hooks/usePostFile';
+import Spinner from '../../../components/Spinner';
 
 export interface FileInfoProps {
   name: string;
@@ -12,6 +14,8 @@ const UploadBox = () => {
   const [isActive, setIsActive] = useState(false);
   const [uploadedInfo, setUploadedInfo] = useState<FileInfoProps | null>(null);
   let inputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate: uploadFile, isPending, isError } = usePostFile();
 
   const handleDragEnter = () => {
     setIsActive(true);
@@ -92,7 +96,14 @@ const UploadBox = () => {
           accept='.pdf'
           ref={inputRef}
         />
-        {uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />}
+        {/* 파일 업로드 중이거나 업로드 실패했을 때 처리 */}
+        {isError ? (
+          <div>업로드 실패</div>
+        ) : isPending ? (
+          <Spinner />
+        ) : (
+          uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />
+        )}
         {!uploadedInfo && (
           <>
             <HiOutlineDocumentArrowUp size={120} className='stroke-[1.5]' />
@@ -110,7 +121,7 @@ const UploadBox = () => {
           >
             삭제
           </button>
-          <ConfirmButton data={uploadedInfo} />
+          <ConfirmButton data={uploadedInfo} uploadFile={uploadFile} />
         </div>
       )}
     </div>

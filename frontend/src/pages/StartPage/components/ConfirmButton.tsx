@@ -1,9 +1,13 @@
-import usePostFile from '../hooks/usePostFile';
 import { FileInfoProps } from './UploadBox';
 
-const ConfirmButton = ({ data }: { data: FileInfoProps }) => {
+const ConfirmButton = ({
+  data,
+  uploadFile,
+}: {
+  data: FileInfoProps;
+  uploadFile: (file: File) => void;
+}) => {
   const file = data.file;
-  const { mutate: uploadFile } = usePostFile();
 
   const handleUploadFile = (file: File | null) => {
     if (file) {
