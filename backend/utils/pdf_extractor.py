@@ -1,3 +1,5 @@
+# 순형님이 미리 작성해둔 코드
+
 import fitz  # PyMuPDF
 
 def extract_text_from_pdf(file_path):
