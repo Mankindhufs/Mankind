@@ -15,7 +15,7 @@ const UploadBox = () => {
   const [uploadedInfo, setUploadedInfo] = useState<FileInfoProps | null>(null);
   let inputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate: uploadFile, isPending, isError } = usePostFile();
+  const { mutate: uploadFile, isPending, isError, reset } = usePostFile();
 
   const handleDragEnter = () => {
     setIsActive(true);
@@ -37,6 +37,8 @@ const UploadBox = () => {
 
   // 파일 형식이 pdf인지 확인 후 저장하는 함수
   const validFile = (file: File) => {
+    // 뮤테이션의 내부 상태 초기화
+    reset();
     const { name } = file;
     const fileType = file.type;
 
@@ -74,6 +76,8 @@ const UploadBox = () => {
   const handleDeleteFile = () => {
     if (inputRef.current) {
       setUploadedInfo(null);
+      // 뮤테이션의 내부 상태 초기화
+      reset();
       inputRef.current.value = '';
     }
   };
@@ -82,7 +86,7 @@ const UploadBox = () => {
     <div className='flex flex-col items-center gap-4 w-[100%] h-[45%] min-h-72 max-h-[400px]'>
       <label
         htmlFor='file'
-        className={`w-[100%] h-[100%] border-2 border-dashed box-border p-7 min-w-[320px] rounded-[20px] flex flex-col justify-center items-center gap-8 overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
+        className={`w-[100%] h-[100%] border-2 border-dashed box-border p-7 min-w-[420px] rounded-[20px] flex flex-col justify-center items-center gap-8 overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -97,13 +101,6 @@ const UploadBox = () => {
           ref={inputRef}
         />
         {/* 파일 업로드 중이거나 업로드 실패했을 때 처리 */}
-        {isError ? (
-          <div>업로드 실패</div>
-        ) : isPending ? (
-          <Spinner />
-        ) : (
-          uploadedInfo && <FileInfo uploadedInfo={uploadedInfo} />
-        )}
         {!uploadedInfo && (
           <>
             <HiOutlineDocumentArrowUp size={120} className='stroke-[1.5]' />
@@ -112,9 +109,16 @@ const UploadBox = () => {
             </p>
           </>
         )}
+        {isPending ? (
+          <Spinner />
+        ) : isError ? (
+          <div>업로드 실패</div>
+        ) : uploadedInfo ? (
+          <FileInfo uploadedInfo={uploadedInfo} />
+        ) : null}
       </label>
       {uploadedInfo && (
-        <div className='flex gap-6'>
+        <div className='flex min-w-[420px] gap-4 items-center justify-center'>
           <button
             className='w-48 h-14 rounded-[50px] border-[1px] border-solid border-black'
             onClick={handleDeleteFile}
