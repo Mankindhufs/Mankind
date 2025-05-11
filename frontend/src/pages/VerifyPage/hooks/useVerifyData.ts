@@ -1,5 +1,5 @@
 // PDF 결과를 react-query로 가져오는 훅
-// 일단 임의값으로 설정해두었습니다.
+// 일단 임의값으로 설정해두었습니다. 잘몰라서요.. 공부해가겠습니다ㅠㅠ
 
 // src/pages/VerifyPage/hooks/useVerifyData.ts
 import { useQuery } from '@tanstack/react-query';
@@ -31,7 +31,7 @@ export default function useVerifyData() {
         '2027년 03월 25일',
         '2027년 09월 24일',
       ],
-      earlyRedeemConditions: [104.65, 109.30, 113.95, 118.60, 123.25],
+      earlyRedeemConditions: [90, 90, 85, 85, 80],
       earlyRedeemYields:     [104.65, 109.30, 113.95, 118.60, 123.25],
     }),
     enabled: true,

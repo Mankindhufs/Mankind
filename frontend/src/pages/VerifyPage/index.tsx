@@ -20,33 +20,47 @@ const VerifyPage: React.FC = () => {
 
   return (
     <div className="p-8 grid grid-cols-3 gap-6">
+      
       {/* 1열: 기초 지수 */}
       <div>
         <SectionHeader title="기초 지수" />
         {data.indices.map(idx => (
-          <InfoRow key={idx} label={idx} value={idx} readOnly />
+          <InfoRow key={idx} label={idx} value={idx} readOnly hideLabel
+          plainText
+          />
         ))}
       </div>
 
       {/* 2열: 최대손실 성립 조건 % */}
       <div>
         <SectionHeader title="최대손실 성립 조건 %" />
-        <InfoRow label="만기일 가격" value={data.maxLossPrice.toString()} suffix="%" readOnly />
-        <InfoRow label="낙인 구간"   value={data.knockInRatio.toString()}   suffix="%" readOnly />
+        <InfoRow 
+          label="만기일 가격"
+          value={data.maxLossPrice.toString()} 
+          suffix="%" 
+          readOnly
+          inputClassName='w-32' /* 128 px */
+        />
+        <InfoRow label="낙인 구간"   value={data.knockInRatio.toString()}   suffix="%" readOnly
+        inputClassName='w-32' />
       </div>
 
       {/* 3열: 만기평가일 및 만기일 */}
       <div>
         <SectionHeader title="만기평가일 및 만기일" />
-        <InfoRow label="만기평가일" value={data.evaluationDate} readOnly />
-        <InfoRow label="만기일"     value={data.maturityDate}  readOnly />
+        <InfoRow label="만기평가일" value={data.evaluationDate} readOnly
+        inputClassName='w-48' /> {/* 192 px */}
+        <InfoRow label="만기일"     value={data.maturityDate}  readOnly
+        inputClassName='w-48' plainText />
       </div>
 
       {/* 4열: 자동조기상환평가일 (2행 1열) */}
       <div>
         <SectionHeader title="자동조기상환평가일" />
         {data.earlyRedeemDates.map((date, i) => (
-          <InfoRow key={i} label={`${i + 1}차`} value={date} readOnly />
+          <InfoRow key={i} label={`${i + 1}차`} value={date} readOnly
+          inputClassName='w-48'
+          />
         ))}
       </div>
 
@@ -54,7 +68,8 @@ const VerifyPage: React.FC = () => {
       <div>
         <SectionHeader title="자동조기상환 성립 조건 (% 이상)" />
         {data.earlyRedeemConditions.map((c, i) => (
-          <InfoRow key={i} label={`${i + 1}차`} value={c.toString()} suffix="%" readOnly />
+          <InfoRow key={i} label={`${i + 1}차`} value={c.toString()} suffix="%" readOnly
+          inputClassName='w-32' />
         ))}
       </div>
 
@@ -62,7 +77,8 @@ const VerifyPage: React.FC = () => {
       <div>
         <SectionHeader title="자동조기상환 수익률" />
         {data.earlyRedeemYields.map((y, i) => (
-          <InfoRow key={i} label={`${i + 1}차`} value={y.toString()} suffix="%" readOnly />
+          <InfoRow key={i} label={`${i + 1}차`} value={y.toString()} suffix="%" readOnly
+          inputClassName='w-28' prefix="액면금액 x"/>
         ))}
       </div>
     </div>

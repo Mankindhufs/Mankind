@@ -4,6 +4,29 @@ import { PiWarningFill } from 'react-icons/pi';
 
 const Layout = () => {
   const location = useLocation();
+  const isVerify = location.pathname === '/verify';
+
+  // 1) VerifyPage 전용 레이아웃
+  if (isVerify) {
+    return (
+      <div className="w-full min-h-screen">
+        {/* 흰색 헤더 */}
+        <header className="w-full bg-white px-6 py-4 shadow-sm">
+          <div className="mx-auto max-w-[1440px] flex items-center">
+            <img src={Logo} alt="로고" className="h-14" />
+
+          </div>
+        </header>
+
+        {/* 회색 배경 본문 */}
+        <main className="bg-grayBackground flex-grow py-8 px-6">
+          <div className="mx-auto max-w-[1440px]">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className='w-[100vw] h-[100vh] bg-grayBackground'>
