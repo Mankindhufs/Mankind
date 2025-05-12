@@ -8,9 +8,13 @@ const Layout = () => {
 
   return (
     <div className='w-screen h-screen'>
-      <div className='mx-auto max-w-[1440px] bg-white'>
+      <div
+        className={`mx-auto max-w-[1440px] ${path == '/verify' ? 'bg-grayBackground' : 'bg-white'}`}
+      >
         {path != '/' && (
-          <div className='fixed w-[100%] h-[64px] flex items-center pr-4 pl-1 py-1 justify-between bg-white'>
+          <div
+            className={`fixed w-[100%] h-[64px] flex items-center pr-4 pl-1 py-1 justify-between bg-white ${path == '/verify' ? 'shadow-sm' : ''}`}
+          >
             <Logo className='h-14 w-36 min-w-[144px]' />
             {path == '/dashboard' && (
               <div className='self-end flex items-center min-w-[800px] justify-end bg-white'>
