@@ -4,14 +4,15 @@ import { PiWarningFill } from 'react-icons/pi';
 
 const Layout = () => {
   const location = useLocation();
+  const path = location.pathname;
 
   return (
-    <div className='w-[100vw] h-[100vh] bg-grayBackground'>
-      <div className='mx-auto max-w-[1440px] h-[100%] bg-white'>
-        {location.pathname != '/' && (
+    <div className='w-screen h-screen'>
+      <div className='mx-auto max-w-[1440px] bg-white'>
+        {path != '/' && (
           <div className='fixed w-[100%] h-[64px] flex items-center pr-4 pl-6 py-1 justify-between bg-white'>
             <img src={Logo} alt='로고' className='h-14' />
-            {location.pathname == '/dashboard' && (
+            {path == '/dashboard' && (
               <div className='self-end flex items-center min-w-[800px] justify-end bg-white'>
                 <PiWarningFill size={20} className='text-yellow-400' />
                 <p className='font-bold text-red my-1'>
@@ -22,7 +23,7 @@ const Layout = () => {
             )}
           </div>
         )}
-        <div className='pt-[64px]'>
+        <div className={`${path == '/' ? '' : 'pt-[64px]'}`}>
           <Outlet />
         </div>
       </div>
