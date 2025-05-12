@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import Logo from './assets/images/logo.png';
+import Logo from './assets/images/logo.svg?react';
 import { PiWarningFill } from 'react-icons/pi';
 
 const Layout = () => {
@@ -10,8 +10,8 @@ const Layout = () => {
     <div className='w-screen h-screen'>
       <div className='mx-auto max-w-[1440px] bg-white'>
         {path != '/' && (
-          <div className='fixed w-[100%] h-[64px] flex items-center pr-4 pl-6 py-1 justify-between bg-white'>
-            <img src={Logo} alt='로고' className='h-14' />
+          <div className='fixed w-[100%] h-[64px] flex items-center pr-4 pl-1 py-1 justify-between bg-white'>
+            <Logo className='h-14 w-36 min-w-[144px]' />
             {path == '/dashboard' && (
               <div className='self-end flex items-center min-w-[800px] justify-end bg-white'>
                 <PiWarningFill size={20} className='text-yellow-400' />

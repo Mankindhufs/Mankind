@@ -1,5 +1,11 @@
+import Logo from '../../assets/images/logo.svg?react';
+
 const Dashboard = () => {
-  return <div>대시보드</div>;
+  return (
+    <div>
+      <Logo />
+    </div>
+  );
 };
 
 export default Dashboard;
