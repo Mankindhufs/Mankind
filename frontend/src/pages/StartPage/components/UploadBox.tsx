@@ -83,10 +83,10 @@ const UploadBox = () => {
   };
 
   return (
-    <div className='flex flex-col items-center gap-4 w-[100%] h-[45%] min-h-72 max-h-[400px]'>
+    <div className='flex flex-col items-center gap-4 w-[100%] h-[55%] max-h-[400px]'>
       <label
         htmlFor='file'
-        className={`w-[100%] h-[100%] border-2 border-dashed box-border p-7 min-w-[420px] rounded-[20px] flex flex-col justify-center items-center gap-8 overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
+        className={`w-[100%] h-[100%] border-2 border-dashed p-7 min-w-[420px] min-h-[240px] rounded-[20px] flex flex-col justify-center items-center gap-8 box-border overflow-auto text-grayIcon cursor-pointer ${uploadedInfo || isActive ? 'border-gray-800 bg-[#F2FDF0]' : 'bg-grayBackground border-grayBorder'}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -103,7 +103,10 @@ const UploadBox = () => {
         {/* 파일 업로드 중이거나 업로드 실패했을 때 처리 */}
         {!uploadedInfo && (
           <>
-            <HiOutlineDocumentArrowUp size={120} className='stroke-[1.5]' />
+            <HiOutlineDocumentArrowUp
+              size={120}
+              className='stroke-[1.5] min-h-[120px]'
+            />
             <p className='text-center'>
               클릭해서 파일을 선택하거나 드래그해주세요.
             </p>
