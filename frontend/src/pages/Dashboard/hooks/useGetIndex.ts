@@ -7,5 +7,9 @@ export const useGetIndex = () => {
     queryFn: () => getIndex(),
   });
 
-  return { data, isPending, isError };
+  const kospi = data?.find((item) => item.name === 'KOSPI 200');
+  const sp = data?.find((item) => item.name === 'S&P 500');
+  const euro = data?.find((item) => item.name === 'EURO STOXX 50');
+
+  return { kospi, sp, euro, isPending, isError };
 };
