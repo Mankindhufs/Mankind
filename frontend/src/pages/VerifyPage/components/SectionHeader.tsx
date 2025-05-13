@@ -11,7 +11,7 @@ interface Props {
  */
 const SectionHeader: React.FC<Props> = ({ title }) => (
   <div className="mb-4 flex flex-col">
-    <h2 className="text-[25px] font-bold">{title}</h2>
+    <h2 className="text-[20px] font-bold">{title}</h2>
     
     <div className="w-full h-[2px] bg-mainGreen mt-1" />
   </div>
