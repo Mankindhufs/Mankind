@@ -9,6 +9,7 @@ CORS(app)
 
 # 파일 업로드 경로 설정
 app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "uploads")
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 # 라우터 등록 (Blueprint)
 app.register_blueprint(index_bp, url_prefix="/api/index")
