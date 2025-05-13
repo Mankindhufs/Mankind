@@ -2,44 +2,13 @@ import { useState } from 'react';
 import DashboardItem from './DashboardItem';
 import IndexChartButton from './IndexChartButton';
 import IndexChartItem from './IndexChartItem';
-import { IndexItemProp } from '../../../typings/types';
+import { IndexButtonProp } from '../../../typings/types';
 import { useGetIndex } from '../hooks/useGetIndex';
-
-// 임의값
-const data1 = [
-  { name: 'Page A', value: 4000 },
-  { name: 'Page B', value: 3000 },
-  { name: 'Page C', value: 2000 },
-  { name: 'Page D', value: 2780 },
-  { name: 'Page E', value: 1890 },
-  { name: 'Page F', value: 2390 },
-  { name: 'Page G', value: 3490 },
-];
-
-const data2 = [
-  { name: 'Page A', value: 2400 },
-  { name: 'Page B', value: 1398 },
-  { name: 'Page C', value: 9800 },
-  { name: 'Page D', value: 3908 },
-  { name: 'Page E', value: 4800 },
-  { name: 'Page F', value: 3800 },
-  { name: 'Page G', value: 4300 },
-];
-
-const data3 = [
-  { name: 'Page A', value: 2400 },
-  { name: 'Page B', value: 2210 },
-  { name: 'Page C', value: 2290 },
-  { name: 'Page D', value: 2000 },
-  { name: 'Page E', value: 2181 },
-  { name: 'Page F', value: 2500 },
-  { name: 'Page G', value: 2100 },
-];
+import Spinner from '../../../components/Spinner';
 
 const IndexChart = () => {
   const [isClicked, setIsClicked] = useState<string>('KOSPI 200');
-  const { data } = useGetIndex();
-  console.log(data);
+  const { kospi, sp, euro, isPending, isError } = useGetIndex();
 
   // 버튼 이름, key
   const buttonData = [
@@ -49,10 +18,10 @@ const IndexChart = () => {
   ];
 
   // 버튼에 따라 다른 컴포넌트 렌더링
-  const indexItem: IndexItemProp = {
-    'KOSPI 200': <IndexChartItem data={data1} />,
-    'EURO STOXX 50': <IndexChartItem data={data2} />,
-    'S&P 500': <IndexChartItem data={data3} />,
+  const indexItem: IndexButtonProp = {
+    'KOSPI 200': kospi && <IndexChartItem data={kospi} />,
+    'EURO STOXX 50': sp && <IndexChartItem data={sp} />,
+    'S&P 500': euro && <IndexChartItem data={euro} />,
   };
 
   // 클릭 시 active 상태 변경
@@ -75,9 +44,15 @@ const IndexChart = () => {
         ))}
       </nav>
 
-      {isClicked && (
-        <div className='w-full h-[calc(100%-15%)]'>{indexItem[isClicked]}</div>
-      )}
+      <div className='w-full h-[calc(100%-15%)] flex items-center justify-center'>
+        {isPending ? (
+          <Spinner />
+        ) : isError ? (
+          <p className='text-grayBorder'>데이터를 불러올 수 없습니다.</p>
+        ) : (
+          isClicked && <>{indexItem[isClicked]}</>
+        )}
+      </div>
     </DashboardItem>
   );
 };
