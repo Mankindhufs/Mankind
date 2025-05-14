@@ -7,5 +7,5 @@ export const postFile = async (file: File) => {
 
   const res = await axiosInstance.post('/api/scenario/upload', formData);
 
-  return res.data;
+  return res.data.scenario_result;
 };
