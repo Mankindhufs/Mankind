@@ -55,7 +55,7 @@ const InfoRow: React.FC<Props> = ({
           border rounded-lg bg-white text-left text-base
         ${inputClassName} 
         `}
-        value={value}
+        defaultValue={value}
         readOnly={readOnly}
       />
       {suffix && <span className="ml-2">{suffix}</span>}
