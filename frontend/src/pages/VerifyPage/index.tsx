@@ -1,10 +1,3 @@
-// const VerifyPage = () => {
-//   return <div>값 확인 페이지</div>;
-// };
-
-// export default VerifyPage;
-
-
 
 // src/pages/VerifyPage/index.tsx
 import React from 'react';
@@ -19,7 +12,7 @@ const VerifyPage: React.FC = () => {
   if (isError || !data) return <div className="p-8">데이터를 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
-    <div className="p-8 grid grid-cols-3 gap-6">
+    <div className="p-8 grid grid-cols-[repeat(3,minmax(240px,1fr))]  gap-6">
       
       {/* 1열: 기초 지수 */}
       <div>
