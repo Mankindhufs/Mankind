@@ -4,23 +4,12 @@
 //            75% (input)
 
 // src/pages/VerifyPage/components/InfoRow.tsx
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { InputProps } from '../../../typings/types';
 
-interface Props {
-  name?: string;
-  label: string;
-  value?: string | number;
-  readOnly?: boolean;
-  suffix?: string; // 뒤에 % 같은 단위 붙이고 싶을 때
-  hideLabel?: boolean; // '기초지수' 섹션에서는 라벨 가리기
-  inputClassName?: string;
-  plainText?: boolean; //만기일은 박스 없이 텍스트만 렌더링
-  prefix?: string; // 액면금액 텍스트 추가
-  isEditing?: boolean;
-  onChangeFunction?: (e: ChangeEvent<HTMLInputElement>) => void;
-}
-
-const InfoRow: React.FC<Props> = ({
+const InfoRow: React.FC<InputProps> = ({
   name,
   label,
   value = '',
@@ -28,46 +17,97 @@ const InfoRow: React.FC<Props> = ({
   suffix,
   hideLabel = false,
   inputClassName = '',
-  //  input 박스별로 디자인 다르게 하려고 만들음
+  //  input 박스별로 디자인 다르게 하려고 만듦
   plainText = false,
   prefix,
   isEditing,
+  datetype,
   onChangeFunction,
-}) => (
-  <div className='flex items-center justify-between w-[95%] mb-4 gap-5'>
-    {/* <label className="text-sm font-medium mb-1">{label}</label> */}
-    {!hideLabel && (
-      <label className='text-sm font-medium mb-1 min-w-12 max-w-20 break-keep'>
-        {label}
-      </label>
-    )}
+}) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    new Date(value),
+  );
 
-    <div className='flex items-center'>
-      {/* prefix가 있으면 인풋 앞에 렌더 */}
-      {prefix && (
-        <span className='mr-2 text-sm font-normal min-w-16'>{prefix}</span>
+  // 선택 가능한 날짜를 입력된 날짜의 1년 전후로 설정
+  const minYear = selectedDate
+    ? new Date(
+        selectedDate.getFullYear() - 1,
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+      )
+    : undefined;
+  const maxYear = selectedDate
+    ? new Date(
+        selectedDate.getFullYear() + 1,
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+      )
+    : undefined;
+
+  // datepicker 수정값 반영
+  const onChangeDate = (
+    e?: ChangeEvent<HTMLInputElement>,
+    name?: string,
+    date?: Date | null,
+  ) => {
+    if (!e && date) {
+      setSelectedDate(date);
+      onChangeFunction?.(undefined, name, date);
+    }
+  };
+
+  return (
+    <div className='flex items-center justify-between w-[95%] mb-4 gap-5'>
+      {/* <label className="text-sm font-medium mb-1">{label}</label> */}
+      {!hideLabel && (
+        <label className='text-sm font-medium mb-1 min-w-12 max-w-20 break-keep'>
+          {label}
+        </label>
       )}
 
-      {/* 인풋 + 접미사*/}
+      <div className='flex items-center'>
+        {/* prefix가 있으면 인풋 앞에 렌더 */}
+        {prefix && (
+          <span className='mr-2 text-sm font-normal min-w-16'>{prefix}</span>
+        )}
 
-      {plainText ? (
-        // 플레인 텍스트 모드
-        <span className='text-base break-keep text-end '>{value}</span>
-      ) : (
-        // 기본: 인풋 박스 + 접미사
-        <>
-          <input
-            name={name}
-            className={`p-2 border rounded-lg bg-white text-left text-base ${inputClassName} max-w-64 min-w-24`}
-            defaultValue={value}
-            readOnly={isEditing ? false : readOnly}
-            onChange={onChangeFunction}
-          />
-          {suffix && <span className='ml-2'>{suffix}</span>}
-        </>
-      )}
+        {/* 인풋 + 접미사*/}
+
+        {plainText ? (
+          // 플레인 텍스트 모드
+          <span className='text-base break-keep text-end '>{value}</span>
+        ) : datetype ? (
+          <>
+            <DatePicker
+              name={name}
+              className={`p-2 border rounded-lg bg-white text-left text-base max-w-64 min-w-24`}
+              dateFormat='yyyy-MM-dd' // 날짜 형태
+              shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
+              selected={selectedDate}
+              minDate={minYear}
+              maxDate={maxYear}
+              readOnly={isEditing ? false : readOnly}
+              onChange={(date) => {
+                onChangeDate(undefined, name, date);
+              }}
+            />
+          </>
+        ) : (
+          // 기본: 인풋 박스 + 접미사
+          <>
+            <input
+              name={name}
+              className={`p-2 border rounded-lg bg-white text-left text-base ${inputClassName} max-w-64 min-w-24 focus:outline-none`}
+              defaultValue={value}
+              readOnly={isEditing ? false : readOnly}
+              onChange={onChangeFunction}
+            />
+            {suffix && <span className='ml-2'>{suffix}</span>}
+          </>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default InfoRow;
