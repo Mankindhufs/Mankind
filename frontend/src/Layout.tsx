@@ -1,10 +1,18 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './assets/images/logo.svg?react';
 import { PiWarningFill } from 'react-icons/pi';
+import { removeFileValue } from './utils/savedFile';
 
 const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
+  const navigate = useNavigate();
+
+  // 로고 누를 때 초기 화면으로 이동, localStorage에 저장된 추출값 초기화
+  const handleClickLogo = () => {
+    navigate('/');
+    removeFileValue();
+  };
 
   return (
     <div
@@ -16,7 +24,10 @@ const Layout = () => {
             className={`fixed left-0 right-0 top-0 z-50 w-full h-[64px] bg-white ${path == '/verify' ? 'shadow-sm' : ''}`}
           >
             <div className='flex mx-auto max-w-[1440px] items-center pr-4 pl-1 py-1 justify-between'>
-              <Logo className='h-14 w-36 min-w-[144px]' />
+              <Logo
+                className='h-14 w-36 min-w-[144px] cursor-pointer'
+                onClick={handleClickLogo}
+              />
               {path == '/dashboard' && (
                 <div className='self-end flex items-center min-w-[800px] justify-end bg-white'>
                   <PiWarningFill size={20} className='text-yellow-400' />
