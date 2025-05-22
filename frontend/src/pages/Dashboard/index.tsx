@@ -1,14 +1,17 @@
+import { getFileValue } from '../../utils/savedFile';
 import IndexChart from './components/IndexChart';
 import RepaymentScenario from './components/RepaymentScenario';
 import RevenueStructure from './components/RevenueStructure';
 import Sidebar from './components/Sidebar';
 
 const Dashboard = () => {
+  const data = getFileValue();
+
   return (
     <div className='grid grid-cols-12 grid-rows-4 h-[calc(100vh-64px)] gap-4 p-5'>
       {/* 왼쪽 사이드바 */}
       <div className='col-span-3 row-start-1 row-end-5'>
-        <Sidebar />
+        <Sidebar props={data} />
       </div>
 
       {/* 지수 차트 */}

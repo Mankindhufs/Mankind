@@ -7,3 +7,11 @@ export const formattedDate = (value: Date) => {
 
   return dateString;
 };
+
+// 0000-00-00을 0000년 00월 00일 형식으로 변경
+export const convertDateString = (value: string) => {
+  const [year, month, date] = value.split('-');
+  const dateString = `${year}년 ${month}월 ${date}일`;
+
+  return dateString;
+};
