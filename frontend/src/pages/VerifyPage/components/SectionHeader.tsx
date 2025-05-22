@@ -10,10 +10,10 @@ interface Props {
  화면의 각 섹션(예: 기초 지수, 최대손실 성립 조건 %) 제목 + 녹색 밑줄을 그리는 컴포넌트
  */
 const SectionHeader: React.FC<Props> = ({ title }) => (
-  <div className="mb-4 flex flex-col">
-    <h2 className="text-[18px] font-bold">{title}</h2>
-    
-    <div className="w-full h-[2px] bg-mainGreen mt-1" />
+  <div className='w-full min-w-64 mb-4 flex flex-col'>
+    <h2 className='text-[18px] font-bold px-1 py-2'>{title}</h2>
+
+    <div className='h-[2px] bg-mainGreen mt-1' />
   </div>
 );
 
