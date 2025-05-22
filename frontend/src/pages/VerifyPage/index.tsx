@@ -3,39 +3,42 @@ import React, { ChangeEvent, useState } from 'react';
 import SectionHeader from './components/SectionHeader';
 import InfoRow from './components/InfoRow';
 import EditButton from './components/EditButton';
-import { PdfValue, roundKey } from '../../typings/types';
+import { PdfValue, Round, RoundKey } from '../../typings/types';
 import { getFileValue, setFileValue } from '../../utils/savedFile';
 import { useNavigate } from 'react-router-dom';
+import { isValidNumber } from '../../utils/validationCheck';
+import Alert from '../../components/Alert';
+import { formattedDate } from '../../utils/format';
 
 export const dummy = {
-  기초자산: 'KOSPI200 S&P500 EuroStoxx50',
+  기초자산: 'KOSPI200 지수/S&P509 지수/Eurostoxx50 지수',
   낙인구간: 50,
   만기일: '만기평가일(불포함) 이후 3영업일',
-  만기평가일: '2027년 02월 12일',
-  위험등급: 5,
+  만기평가일: '2027-02-12',
+  위험등급: '(높은위험) 고난도금융투자상품',
   손실조건버전: 'ver2',
   자동조기상환: {
-    first: {
+    '1차': {
       자동조기상환평가일: '2025-09-25',
       자동조기상환성립조건: 90,
       자동조기상환수익률: 104.65,
     },
-    second: {
+    '2차': {
       자동조기상환평가일: '2026-03-25',
       자동조기상환성립조건: 90,
       자동조기상환수익률: 104.65,
     },
-    third: {
+    '3차': {
       자동조기상환평가일: '2026-09-23',
       자동조기상환성립조건: 85,
       자동조기상환수익률: 113.95,
     },
-    fourth: {
+    '4차': {
       자동조기상환평가일: '2027-03-25',
       자동조기상환성립조건: 85,
       자동조기상환수익률: 118.6,
     },
-    fifth: {
+    '5차': {
       자동조기상환평가일: '2027-09-24',
       자동조기상환성립조건: 80,
       자동조기상환수익률: 123.25,
@@ -61,45 +64,43 @@ const VerifyPage: React.FC = () => {
     위험등급: savedData.위험등급,
     손실조건버전: savedData.손실조건버전,
     자동조기상환: {
-      first: {
-        자동조기상환평가일: savedData.자동조기상환.first.자동조기상환평가일,
-        자동조기상환성립조건: savedData.자동조기상환.first.자동조기상환성립조건,
-        자동조기상환수익률: savedData.자동조기상환.first.자동조기상환수익률,
-      },
-      second: {
-        자동조기상환평가일: savedData.자동조기상환.second.자동조기상환평가일,
+      '1차': {
+        자동조기상환평가일: savedData.자동조기상환['1차'].자동조기상환평가일,
         자동조기상환성립조건:
-          savedData.자동조기상환.second.자동조기상환성립조건,
-        자동조기상환수익률: savedData.자동조기상환.second.자동조기상환수익률,
+          savedData.자동조기상환['1차'].자동조기상환성립조건,
+        자동조기상환수익률: savedData.자동조기상환['1차'].자동조기상환수익률,
       },
-      third: {
-        자동조기상환평가일: savedData.자동조기상환.third.자동조기상환평가일,
-        자동조기상환성립조건: savedData.자동조기상환.third.자동조기상환성립조건,
-        자동조기상환수익률: savedData.자동조기상환.third.자동조기상환수익률,
-      },
-      fourth: {
-        자동조기상환평가일: savedData.자동조기상환.fourth.자동조기상환평가일,
+      '2차': {
+        자동조기상환평가일: savedData.자동조기상환['2차'].자동조기상환평가일,
         자동조기상환성립조건:
-          savedData.자동조기상환.fourth.자동조기상환성립조건,
-        자동조기상환수익률: savedData.자동조기상환.fourth.자동조기상환수익률,
+          savedData.자동조기상환['2차'].자동조기상환성립조건,
+        자동조기상환수익률: savedData.자동조기상환['2차'].자동조기상환수익률,
       },
-      fifth: {
-        자동조기상환평가일: savedData.자동조기상환.fifth.자동조기상환평가일,
-        자동조기상환성립조건: savedData.자동조기상환.fifth.자동조기상환성립조건,
-        자동조기상환수익률: savedData.자동조기상환.fifth.자동조기상환수익률,
+      '3차': {
+        자동조기상환평가일: savedData.자동조기상환['3차'].자동조기상환평가일,
+        자동조기상환성립조건:
+          savedData.자동조기상환['3차'].자동조기상환성립조건,
+        자동조기상환수익률: savedData.자동조기상환['3차'].자동조기상환수익률,
+      },
+      '4차': {
+        자동조기상환평가일: savedData.자동조기상환['4차'].자동조기상환평가일,
+        자동조기상환성립조건:
+          savedData.자동조기상환['4차'].자동조기상환성립조건,
+        자동조기상환수익률: savedData.자동조기상환['4차'].자동조기상환수익률,
+      },
+      '5차': {
+        자동조기상환평가일: savedData.자동조기상환['5차'].자동조기상환평가일,
+        자동조기상환성립조건:
+          savedData.자동조기상환['5차'].자동조기상환성립조건,
+        자동조기상환수익률: savedData.자동조기상환['5차'].자동조기상환수익률,
       },
     },
     종목명: savedData.종목명,
     최대손실만기조건비율: savedData.최대손실만기조건비율,
   });
-
-  const round: { [key: string]: string } = {
-    first: '1차',
-    second: '2차',
-    third: '3차',
-    fourth: '4차',
-    fifth: '5차',
-  };
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [animation, setAnimation] = useState('');
 
   const navigate = useNavigate();
 
@@ -107,11 +108,12 @@ const VerifyPage: React.FC = () => {
   const editedNestedValue = (
     origin: PdfValue['자동조기상환'],
     path: string,
-    value: string | number,
+    value: string | number | Date,
   ) => {
-    const splitedPath = path.split('.');
-    const roundKey = splitedPath[1] as roundKey;
-    const itemKey = splitedPath[2];
+    const match = path.match(/^자동조기상환\[(.+?)\]\.(.+)$/); //자동조기상환['1차'].자동조기상환수익률에서 []안, .뒤 문자열 추출
+    if (!match) return origin;
+    const roundKey = match[1] as RoundKey; // "1차"
+    const itemKey = match[2] as keyof Round; // "자동조기상환수익률"
 
     // 새로운 객체값 생성
     const newObj = {
@@ -126,21 +128,98 @@ const VerifyPage: React.FC = () => {
   };
 
   // 새로운 입력값
-  const handleGetEditedValue = (e: ChangeEvent<HTMLInputElement>): void => {
-    const path = e.target.name;
-    const value = e.target.value;
+  const handleGetEditedValue = (
+    e?: ChangeEvent<HTMLInputElement>,
+    name?: string,
+    date?: Date | null,
+  ): void => {
+    if (e) {
+      const path = e.target.name;
+      const value = e.target.value;
 
-    // 자동조기상환만 별도로 처리
-    if (!path.includes('자동조기상환')) {
-      setEditedData({ ...editedData, [path]: value });
+      // 자동조기상환만 별도로 처리
+      if (!path.includes('자동조기상환')) {
+        setEditedData({ ...editedData, [path]: value });
+      } else {
+        const updated = editedNestedValue(editedData.자동조기상환, path, value);
+        setEditedData({ ...editedData, 자동조기상환: updated });
+      }
     } else {
-      const updated = editedNestedValue(editedData.자동조기상환, path, value);
-      setEditedData({ ...editedData, 자동조기상환: updated });
+      // Date값 처리
+      if (name && date) {
+        const string_date = formattedDate(date);
+
+        if (!name.includes('자동조기상환')) {
+          setEditedData({ ...editedData, [name]: string_date });
+        } else {
+          const updated = editedNestedValue(
+            editedData.자동조기상환,
+            name,
+            string_date,
+          );
+          setEditedData({ ...editedData, 자동조기상환: updated });
+        }
+      }
     }
   };
 
+  // 경고메세지 출력
+  const isValid = () => {
+    let alertMessage = '';
+
+    // 자동조기상환 날짜 형식 확인
+    // const hasInvalidDate = Object.entries(editedData.자동조기상환).some(
+    //   ([_, value]) => !isValidDate(value.자동조기상환평가일),
+    // );
+
+    // 자동조기상환 숫자 형식 확인
+    const hasInvalidNumber = Object.entries(editedData.자동조기상환).some(
+      ([_, value]) =>
+        !isValidNumber(value.자동조기상환성립조건) ||
+        !isValidNumber(value.자동조기상환수익률),
+    );
+
+    // 자동조기상환 제외한 나머지 공백 확인
+    const hasEmpty = Object.entries(editedData).some(([key, value]) => {
+      if (key !== '자동조기상환') {
+        if (typeof value === 'string') return value.trim() === '';
+      }
+      return false;
+    });
+
+    // 자동조기상환 공백 확인
+    const hasEmptyInNested = Object.entries(editedData.자동조기상환).some(
+      ([_, value]) =>
+        value.자동조기상환성립조건.toString() === '' ||
+        value.자동조기상환수익률.toString() === '' ||
+        value.자동조기상환평가일 === '',
+    );
+
+    // if (!isValidDate(editedData.만기평가일) || hasInvalidDate) {
+    //   alertMessage += '날짜 형식이 아닙니다.';
+    // }
+
+    if (
+      !isValidNumber(editedData.최대손실만기조건비율) ||
+      !isValidNumber(editedData.낙인구간) ||
+      hasInvalidNumber
+    ) {
+      alertMessage += '숫자 형식이 아닙니다.';
+    }
+
+    if (hasEmpty || hasEmptyInNested) {
+      if (alertMessage != '') {
+        alertMessage += '/공백을 포함할 수 없습니다.';
+      } else {
+        alertMessage += '공백을 포함할 수 없습니다.';
+      }
+    }
+
+    return alertMessage;
+  };
+
+  // 수정 끝났을 때 실행 - 최종 데이터 localStorage에 저장
   const handleFinishEdit = () => {
-    // TODO: 실제 저장 로직 수행
     const newData = {
       기초자산: savedData.기초자산,
       낙인구간: editedData.낙인구간,
@@ -149,55 +228,64 @@ const VerifyPage: React.FC = () => {
       위험등급: savedData.위험등급,
       손실조건버전: savedData.손실조건버전,
       자동조기상환: {
-        first: {
-          자동조기상환평가일: editedData.자동조기상환.first.자동조기상환평가일,
+        '1차': {
+          자동조기상환평가일: editedData.자동조기상환['1차'].자동조기상환평가일,
           자동조기상환성립조건:
-            editedData.자동조기상환.first.자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환.first.자동조기상환수익률,
+            editedData.자동조기상환['1차'].자동조기상환성립조건,
+          자동조기상환수익률: editedData.자동조기상환['1차'].자동조기상환수익률,
         },
-        second: {
-          자동조기상환평가일: editedData.자동조기상환.second.자동조기상환평가일,
+        '2차': {
+          자동조기상환평가일: editedData.자동조기상환['2차'].자동조기상환평가일,
           자동조기상환성립조건:
-            editedData.자동조기상환.second.자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환.second.자동조기상환수익률,
+            editedData.자동조기상환['2차'].자동조기상환성립조건,
+          자동조기상환수익률: editedData.자동조기상환['2차'].자동조기상환수익률,
         },
-        third: {
-          자동조기상환평가일: editedData.자동조기상환.third.자동조기상환평가일,
+        '3차': {
+          자동조기상환평가일: editedData.자동조기상환['3차'].자동조기상환평가일,
           자동조기상환성립조건:
-            editedData.자동조기상환.third.자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환.third.자동조기상환수익률,
+            editedData.자동조기상환['3차'].자동조기상환성립조건,
+          자동조기상환수익률: editedData.자동조기상환['3차'].자동조기상환수익률,
         },
-        fourth: {
-          자동조기상환평가일: editedData.자동조기상환.fourth.자동조기상환평가일,
+        '4차': {
+          자동조기상환평가일: editedData.자동조기상환['4차'].자동조기상환평가일,
           자동조기상환성립조건:
-            editedData.자동조기상환.fourth.자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환.fourth.자동조기상환수익률,
+            editedData.자동조기상환['4차'].자동조기상환성립조건,
+          자동조기상환수익률: editedData.자동조기상환['4차'].자동조기상환수익률,
         },
-        fifth: {
-          자동조기상환평가일: editedData.자동조기상환.fifth.자동조기상환평가일,
+        '5차': {
+          자동조기상환평가일: editedData.자동조기상환['5차'].자동조기상환평가일,
           자동조기상환성립조건:
-            editedData.자동조기상환.fifth.자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환.fifth.자동조기상환수익률,
+            editedData.자동조기상환['5차'].자동조기상환성립조건,
+          자동조기상환수익률: editedData.자동조기상환['5차'].자동조기상환수익률,
         },
       },
       종목명: savedData.종목명,
       최대손실만기조건비율: editedData.최대손실만기조건비율,
     };
+    const errors = isValid();
 
-    if (
-      newData.낙인구간 &&
-      newData.만기평가일 &&
-      newData.최대손실만기조건비율 &&
-      Object.entries(newData.자동조기상환).every((item) =>
-        Object.entries(item).every(
-          (value) => value !== null && value !== undefined,
-        ),
-      )
-    ) {
-      setFileValue(newData);
+    // 에러메세지가 없어야 대시보드 페이지로 이동 가능
+    if (errors) {
+      setErrorMessage(errors);
+      setShowAlert(true);
+      setAnimation('animate-showAlert');
+    } else {
+      setFileValue(newData); // localStorage 저장
+      setIsEditing(false);
+      handleHideAlert();
     }
+  };
 
-    setIsEditing(false);
+  // 애니메이션이 끝난 후 showAlert를 false로 변경
+  const handleHideAlert = () => {
+    if (showAlert && animation === 'animate-showAlert') {
+      setAnimation('animate-hideAlert');
+
+      setTimeout(() => {
+        setShowAlert(false);
+        setAnimation('');
+      }, 1000);
+    }
   };
 
   // if (isPending) return <div className='p-8'>로딩 중…</div>;
@@ -206,11 +294,20 @@ const VerifyPage: React.FC = () => {
 
   return (
     <div className='h-[calc(100vh-64px)] mx-auto'>
+      {/* 검증 통과 못할 시 경고창 */}
+      {showAlert && (
+        <Alert
+          animation={animation}
+          alertMessage='수정을 완료할 수 없습니다.'
+          errorMessage={errorMessage}
+          hideAlertFunction={handleHideAlert}
+        />
+      )}
       <div className='grid grid-cols-12 grid-rows-auto gap-4 h-full px-5 pb-5'>
         {/* 1열: 기초 지수 */}
         <div className='w-[90%] min-w-80 justify-self-center flex flex-col items-center box-border p-4 row-span-2 col-span-4'>
           <SectionHeader title='기초 지수' />
-          {editedData.기초자산.split(' ').map((idx) => (
+          {editedData.기초자산.split('/').map((idx) => (
             <InfoRow
               name={idx}
               key={idx}
@@ -255,6 +352,7 @@ const VerifyPage: React.FC = () => {
             value={editedData.만기평가일}
             readOnly={!isEditing}
             onChangeFunction={handleGetEditedValue}
+            datetype={true}
           />{' '}
           {/* 192 px */}
           <InfoRow
@@ -271,12 +369,13 @@ const VerifyPage: React.FC = () => {
           <SectionHeader title='자동조기상환평가일' />
           {Object.entries(editedData.자동조기상환).map(([i, data]) => (
             <InfoRow
-              name={`자동조기상환.${i}.자동조기상환평가일`}
+              name={`자동조기상환[${i}].자동조기상환평가일`}
               key={i}
-              label={round[i]}
+              label={i}
               value={data.자동조기상환평가일}
               readOnly={!isEditing}
               onChangeFunction={handleGetEditedValue}
+              datetype={true}
             />
           ))}
         </div>
@@ -286,9 +385,9 @@ const VerifyPage: React.FC = () => {
           <SectionHeader title='자동조기상환 성립 조건 (% 이상)' />
           {Object.entries(editedData.자동조기상환).map(([i, data]) => (
             <InfoRow
-              name={`자동조기상환.${i}.자동조기상환성립조건`}
+              name={`자동조기상환[${i}].자동조기상환성립조건`}
               key={i}
-              label={round[i]}
+              label={i}
               value={data.자동조기상환성립조건}
               suffix='%'
               readOnly={!isEditing}
@@ -303,9 +402,9 @@ const VerifyPage: React.FC = () => {
           <SectionHeader title='자동조기상환 수익률' />
           {Object.entries(editedData.자동조기상환).map(([i, data]) => (
             <InfoRow
-              name={`자동조기상환.${i}.자동조기상환수익률`}
+              name={`자동조기상환[${i}].자동조기상환수익률`}
               key={i}
-              label={round[i]}
+              label={i}
               value={data.자동조기상환수익률}
               suffix='%'
               readOnly={!isEditing}
