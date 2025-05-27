@@ -76,3 +76,11 @@ export interface InputProps {
     date?: Date | null,
   ) => void;
 }
+
+// 대시보드 사이드바 데이터
+export interface SidebarProps {
+  종목명: string;
+  위험등급: string;
+  만기평가일: string;
+  만기일: string;
+}

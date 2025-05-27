@@ -1,33 +1,27 @@
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import SearchWord from './SearchWord';
 import DueDate from './DueDate';
+import { SidebarProps } from '../../../typings/types';
 
-const SidebarContent = {
-  file: 'ELS-20250317-010.pdf',
-  title: '신한투자증권 26349호 파생결합증권(주가연계증권)',
-  risk: '5',
-};
+const Sidebar = ({ props }: { props: SidebarProps }) => {
+  const { 종목명, 위험등급, 만기평가일, 만기일 } = props;
 
-const Sidebar = () => {
   return (
     <div
       className='flex flex-col items-center justify-center p-2
      box-border gap-3'
     >
       {/* 파일 이름 */}
-      <div className='text-lg break-keep flex-[1] font-semibold'>
-        {SidebarContent.title}
-      </div>
+      <div className='text-lg break-keep flex-[1] font-semibold'>{종목명}</div>
 
       {/* 위험 등급, 약관 전문 보기 */}
       <div className='flex gap-1 w-full flex[1]'>
         <div className='bg-red text-white flex flex-col box-border p-2 rounded-[10px] flex-[2] justify-between gap-3'>
           <p className='text-start'>위험 등급</p>
-          <p className='text-end text-lg'>{SidebarContent.risk}</p>
+          <p className='text-end break-keep'>{위험등급}</p>
         </div>
 
         <a
-          href={SidebarContent.file}
           target='_blank'
           className='bg-mainGreen text-white flex flex-col box-border p-2 gap-3 justify-between rounded-[10px] flex-[1] cursor-pointer'
         >
@@ -40,7 +34,7 @@ const Sidebar = () => {
       <SearchWord />
 
       {/* 만기평가일 및 만기일 */}
-      <DueDate />
+      <DueDate maturityDate={만기평가일} expirationDate={만기일} />
     </div>
   );
 };
