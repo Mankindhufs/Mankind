@@ -1,17 +1,15 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Logo from './assets/images/logo.svg?react';
 import { PiWarningFill } from 'react-icons/pi';
-import { removeFileValue } from './utils/savedFile';
 
 const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
   const navigate = useNavigate();
 
-  // 로고 누를 때 초기 화면으로 이동, localStorage에 저장된 추출값 초기화
+  // 로고 누를 때 초기 화면으로 이동
   const handleClickLogo = () => {
     navigate('/');
-    removeFileValue();
   };
 
   return (
