@@ -16,10 +16,10 @@ const Alert = ({
     >
       <div className='flex flex-col gap-5 justify-between'>
         <div className='flex flex-col gap-3'>
-          <p className='font-bold'>{alertMessage}</p>
+          <p className='font-bold text-start'>{alertMessage}</p>
           <div className='flex flex-col gap-0'>
             {splitedErrorMessage.map((item, index) => (
-              <span className='text-black' key={index}>
+              <span className='text-black text-start' key={index}>
                 {item}
               </span>
             ))}
