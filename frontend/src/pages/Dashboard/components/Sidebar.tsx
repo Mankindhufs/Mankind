@@ -2,9 +2,16 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import SearchWord from './SearchWord';
 import DueDate from './DueDate';
 import { SidebarProps } from '../../../typings/types';
+import { getBlobUrl, getPDFfile } from '../../../utils/pdfToString';
 
 const Sidebar = ({ props }: { props: SidebarProps }) => {
   const { 종목명, 위험등급, 만기평가일, 만기일 } = props;
+
+  // string으로 저장한 pdf 파일 가져오기
+  const stringFile = getPDFfile();
+  const { data, type } = stringFile;
+
+  const blobUrl = getBlobUrl(data, type);
 
   return (
     <div
@@ -22,6 +29,7 @@ const Sidebar = ({ props }: { props: SidebarProps }) => {
         </div>
 
         <a
+          href={data && blobUrl}
           target='_blank'
           className='bg-mainGreen text-white flex flex-col box-border p-2 gap-3 justify-between rounded-[10px] flex-[1] cursor-pointer'
         >
