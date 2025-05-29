@@ -9,48 +9,55 @@ import { useNavigate } from 'react-router-dom';
 import { isValidNumber } from '../../utils/validationCheck';
 import Alert from '../../components/Alert';
 import { formattedDate } from '../../utils/format';
+import { defaultFileValue } from '../../constants/defaultFileValue';
 
 const VerifyPage: React.FC = () => {
   // 데이터 로딩 훅
   const data = getFileValue();
   // ‘수정 모드’ 상태 추가
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editedData, setEditedData] = useState<PdfValue>({
-    기초자산: data.기초자산,
-    낙인구간: data.낙인구간,
-    만기일: data.만기일,
-    만기평가일: data.만기평가일,
-    위험등급: data.위험등급,
-    손실조건버전: data.손실조건버전,
-    자동조기상환: {
-      '1차': {
-        자동조기상환평가일: data.자동조기상환['1차'].자동조기상환평가일,
-        자동조기상환성립조건: data.자동조기상환['1차'].자동조기상환성립조건,
-        자동조기상환수익률: data.자동조기상환['1차'].자동조기상환수익률,
-      },
-      '2차': {
-        자동조기상환평가일: data.자동조기상환['2차'].자동조기상환평가일,
-        자동조기상환성립조건: data.자동조기상환['2차'].자동조기상환성립조건,
-        자동조기상환수익률: data.자동조기상환['2차'].자동조기상환수익률,
-      },
-      '3차': {
-        자동조기상환평가일: data.자동조기상환['3차'].자동조기상환평가일,
-        자동조기상환성립조건: data.자동조기상환['3차'].자동조기상환성립조건,
-        자동조기상환수익률: data.자동조기상환['3차'].자동조기상환수익률,
-      },
-      '4차': {
-        자동조기상환평가일: data.자동조기상환['4차'].자동조기상환평가일,
-        자동조기상환성립조건: data.자동조기상환['4차'].자동조기상환성립조건,
-        자동조기상환수익률: data.자동조기상환['4차'].자동조기상환수익률,
-      },
-      '5차': {
-        자동조기상환평가일: data.자동조기상환['5차'].자동조기상환평가일,
-        자동조기상환성립조건: data.자동조기상환['5차'].자동조기상환성립조건,
-        자동조기상환수익률: data.자동조기상환['5차'].자동조기상환수익률,
-      },
-    },
-    종목명: data.종목명,
-    최대손실만기조건비율: data.최대손실만기조건비율,
+  const [editedData, setEditedData] = useState<PdfValue>(() => {
+    if (data) {
+      return {
+        기초자산: data.기초자산,
+        낙인구간: data.낙인구간,
+        만기일: data.만기일,
+        만기평가일: data.만기평가일,
+        위험등급: data.위험등급,
+        손실조건버전: data.손실조건버전,
+        자동조기상환: {
+          '1차': {
+            자동조기상환평가일: data.자동조기상환['1차'].자동조기상환평가일,
+            자동조기상환성립조건: data.자동조기상환['1차'].자동조기상환성립조건,
+            자동조기상환수익률: data.자동조기상환['1차'].자동조기상환수익률,
+          },
+          '2차': {
+            자동조기상환평가일: data.자동조기상환['2차'].자동조기상환평가일,
+            자동조기상환성립조건: data.자동조기상환['2차'].자동조기상환성립조건,
+            자동조기상환수익률: data.자동조기상환['2차'].자동조기상환수익률,
+          },
+          '3차': {
+            자동조기상환평가일: data.자동조기상환['3차'].자동조기상환평가일,
+            자동조기상환성립조건: data.자동조기상환['3차'].자동조기상환성립조건,
+            자동조기상환수익률: data.자동조기상환['3차'].자동조기상환수익률,
+          },
+          '4차': {
+            자동조기상환평가일: data.자동조기상환['4차'].자동조기상환평가일,
+            자동조기상환성립조건: data.자동조기상환['4차'].자동조기상환성립조건,
+            자동조기상환수익률: data.자동조기상환['4차'].자동조기상환수익률,
+          },
+          '5차': {
+            자동조기상환평가일: data.자동조기상환['5차'].자동조기상환평가일,
+            자동조기상환성립조건: data.자동조기상환['5차'].자동조기상환성립조건,
+            자동조기상환수익률: data.자동조기상환['5차'].자동조기상환수익률,
+          },
+        },
+        종목명: data.종목명,
+        최대손실만기조건비율: data.최대손실만기조건비율,
+      };
+    } else {
+      return defaultFileValue;
+    }
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -242,161 +249,165 @@ const VerifyPage: React.FC = () => {
     }
   };
 
-  // if (isPending) return <div className='p-8'>로딩 중…</div>;
-  // if (isError || !data)
-  //   return <div className='p-8'>데이터를 불러오는 중 오류가 발생했습니다.</div>;
-
   return (
-    <div className='h-[calc(100vh-64px)] mx-auto'>
-      {/* 검증 통과 못할 시 경고창 */}
-      {showAlert && (
-        <Alert
-          animation={animation}
-          alertMessage='수정을 완료할 수 없습니다.'
-          errorMessage={errorMessage}
-          hideAlertFunction={handleHideAlert}
-        />
-      )}
-      <div className='grid grid-cols-12 grid-rows-auto gap-4 h-full px-5 pb-5'>
-        {/* 1열: 기초 지수 */}
-        <div className='w-[90%] min-w-80 justify-self-center flex flex-col items-center box-border p-4 row-span-2 col-span-4'>
-          <SectionHeader title='기초 지수' />
-          {editedData.기초자산.split('/').map((idx) => (
-            <InfoRow
-              name={idx}
-              key={idx}
-              label={idx}
-              value={idx}
-              readOnly
-              hideLabel
-              plainText
-            />
-          ))}
-        </div>
-
-        {/* 2열: 최대손실 성립 조건 % */}
-        <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-span-2'>
-          <SectionHeader title='최대손실 성립 조건 %' />
-          <InfoRow
-            name='최대손실만기조건비율'
-            label='만기일 가격'
-            value={editedData.최대손실만기조건비율}
-            suffix='%'
-            readOnly={!isEditing}
-            inputClassName='w-32' /* 128 px */
-            onChangeFunction={handleGetEditedValue}
-          />
-          <InfoRow
-            name='낙인구간'
-            label='낙인 구간'
-            value={editedData.낙인구간}
-            suffix='%'
-            readOnly={!isEditing}
-            inputClassName='w-32'
-            onChangeFunction={handleGetEditedValue}
-          />
-        </div>
-
-        {/* 3열: 만기평가일 및 만기일 */}
-        <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-span-2'>
-          <SectionHeader title='만기평가일 및 만기일' />
-          <InfoRow
-            name='만기평가일'
-            label='만기평가일'
-            value={editedData.만기평가일}
-            readOnly={!isEditing}
-            onChangeFunction={handleGetEditedValue}
-            datetype={true}
-          />{' '}
-          {/* 192 px */}
-          <InfoRow
-            name='만기일'
-            label='만기일'
-            value={editedData.만기일}
-            readOnly
-            plainText
-          />
-        </div>
-
-        {/* 4열: 자동조기상환평가일 (2행 1열) */}
-        <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4  row-start-3 row-span-2'>
-          <SectionHeader title='자동조기상환평가일' />
-          {Object.entries(editedData.자동조기상환).map(([i, data]) => (
-            <InfoRow
-              name={`자동조기상환[${i}].자동조기상환평가일`}
-              key={i}
-              label={i}
-              value={data.자동조기상환평가일}
-              readOnly={!isEditing}
-              onChangeFunction={handleGetEditedValue}
-              datetype={true}
-            />
-          ))}
-        </div>
-
-        {/* 5열: 자동조기상환 성립 조건 (% 이상) */}
-        <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-start-3 row-span-2'>
-          <SectionHeader title='자동조기상환 성립 조건 (% 이상)' />
-          {Object.entries(editedData.자동조기상환).map(([i, data]) => (
-            <InfoRow
-              name={`자동조기상환[${i}].자동조기상환성립조건`}
-              key={i}
-              label={i}
-              value={data.자동조기상환성립조건}
-              suffix='%'
-              readOnly={!isEditing}
-              inputClassName='w-32'
-              onChangeFunction={handleGetEditedValue}
-            />
-          ))}
-        </div>
-
-        {/* 6열: 자동조기상환 수익률 */}
-        <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-start-3 row-span-2'>
-          <SectionHeader title='자동조기상환 수익률' />
-          {Object.entries(editedData.자동조기상환).map(([i, data]) => (
-            <InfoRow
-              name={`자동조기상환[${i}].자동조기상환수익률`}
-              key={i}
-              label={i}
-              value={data.자동조기상환수익률}
-              suffix='%'
-              readOnly={!isEditing}
-              inputClassName='w-28'
-              prefix='액면금액 x'
-              onChangeFunction={handleGetEditedValue}
-            />
-          ))}
-        </div>
-
-        {/* 수정/확인 버튼 */}
-        <div className='flex gap-4 items-center justify-center col-span-full'>
-          {isEditing == false ? (
-            <EditButton
-              value='수정'
-              backgroundColor='bg-white'
-              textColor='text-black'
-              onClickFunction={() => setIsEditing(!isEditing)}
-            />
-          ) : (
-            <EditButton
-              value='수정 완료'
-              backgroundColor='bg-mainGreen'
-              onClickFunction={handleFinishEdit}
-              textColor='text-white'
+    <>
+      {data ? (
+        <div className='h-[calc(100vh-64px)] mx-auto'>
+          {/* 검증 통과 못할 시 경고창 */}
+          {showAlert && (
+            <Alert
+              animation={animation}
+              alertMessage='수정을 완료할 수 없습니다.'
+              errorMessage={errorMessage}
+              hideAlertFunction={handleHideAlert}
             />
           )}
+          <div className='grid grid-cols-12 grid-rows-auto gap-4 h-full px-5 pb-5'>
+            {/* 1열: 기초 지수 */}
+            <div className='w-[90%] min-w-80 justify-self-center flex flex-col items-center box-border p-4 row-span-2 col-span-4'>
+              <SectionHeader title='기초 지수' />
+              {editedData.기초자산.split('/').map((idx) => (
+                <InfoRow
+                  name={idx}
+                  key={idx}
+                  label={idx}
+                  value={idx}
+                  readOnly
+                  hideLabel
+                  plainText
+                />
+              ))}
+            </div>
 
-          <button
-            className={`w-48 h-14 rounded-[50px] border-[1px] border-solid ${isEditing ? 'bg-grayBorder' : 'bg-mainGreen'}`}
-            onClick={() => navigate('/dashboard')}
-            disabled={isEditing ? true : false}
-          >
-            확인
-          </button>
+            {/* 2열: 최대손실 성립 조건 % */}
+            <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-span-2'>
+              <SectionHeader title='최대손실 성립 조건 %' />
+              <InfoRow
+                name='최대손실만기조건비율'
+                label='만기일 가격'
+                value={editedData.최대손실만기조건비율}
+                suffix='%'
+                readOnly={!isEditing}
+                inputClassName='w-32' /* 128 px */
+                onChangeFunction={handleGetEditedValue}
+              />
+              <InfoRow
+                name='낙인구간'
+                label='낙인 구간'
+                value={editedData.낙인구간}
+                suffix='%'
+                readOnly={!isEditing}
+                inputClassName='w-32'
+                onChangeFunction={handleGetEditedValue}
+              />
+            </div>
+
+            {/* 3열: 만기평가일 및 만기일 */}
+            <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-span-2'>
+              <SectionHeader title='만기평가일 및 만기일' />
+              <InfoRow
+                name='만기평가일'
+                label='만기평가일'
+                value={editedData.만기평가일}
+                readOnly={!isEditing}
+                onChangeFunction={handleGetEditedValue}
+                datetype={true}
+              />{' '}
+              {/* 192 px */}
+              <InfoRow
+                name='만기일'
+                label='만기일'
+                value={editedData.만기일}
+                readOnly
+                plainText
+              />
+            </div>
+
+            {/* 4열: 자동조기상환평가일 (2행 1열) */}
+            <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4  row-start-3 row-span-2'>
+              <SectionHeader title='자동조기상환평가일' />
+              {Object.entries(editedData.자동조기상환).map(([i, data]) => (
+                <InfoRow
+                  name={`자동조기상환[${i}].자동조기상환평가일`}
+                  key={i}
+                  label={i}
+                  value={data.자동조기상환평가일}
+                  readOnly={!isEditing}
+                  onChangeFunction={handleGetEditedValue}
+                  datetype={true}
+                />
+              ))}
+            </div>
+
+            {/* 5열: 자동조기상환 성립 조건 (% 이상) */}
+            <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-start-3 row-span-2'>
+              <SectionHeader title='자동조기상환 성립 조건 (% 이상)' />
+              {Object.entries(editedData.자동조기상환).map(([i, data]) => (
+                <InfoRow
+                  name={`자동조기상환[${i}].자동조기상환성립조건`}
+                  key={i}
+                  label={i}
+                  value={data.자동조기상환성립조건}
+                  suffix='%'
+                  readOnly={!isEditing}
+                  inputClassName='w-32'
+                  onChangeFunction={handleGetEditedValue}
+                />
+              ))}
+            </div>
+
+            {/* 6열: 자동조기상환 수익률 */}
+            <div className='w-[90%] justify-self-center flex flex-col items-center box-border p-4 col-span-4 row-start-3 row-span-2'>
+              <SectionHeader title='자동조기상환 수익률' />
+              {Object.entries(editedData.자동조기상환).map(([i, data]) => (
+                <InfoRow
+                  name={`자동조기상환[${i}].자동조기상환수익률`}
+                  key={i}
+                  label={i}
+                  value={data.자동조기상환수익률}
+                  suffix='%'
+                  readOnly={!isEditing}
+                  inputClassName='w-28'
+                  prefix='액면금액 x'
+                  onChangeFunction={handleGetEditedValue}
+                />
+              ))}
+            </div>
+
+            {/* 수정/확인 버튼 */}
+            <div className='flex gap-4 items-center justify-center col-span-full'>
+              {isEditing == false ? (
+                <EditButton
+                  value='수정'
+                  backgroundColor='bg-white'
+                  textColor='text-black'
+                  onClickFunction={() => setIsEditing(!isEditing)}
+                />
+              ) : (
+                <EditButton
+                  value='수정 완료'
+                  backgroundColor='bg-mainGreen'
+                  onClickFunction={handleFinishEdit}
+                  textColor='text-white'
+                />
+              )}
+
+              <button
+                className={`w-48 h-14 rounded-[50px] border-[1px] border-solid ${isEditing ? 'bg-grayBorder' : 'bg-mainGreen'}`}
+                onClick={() => navigate('/dashboard')}
+                disabled={isEditing ? true : false}
+              >
+                확인
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className='absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] w-full text-center text-grayBorder'>
+          데이터를 불러올 수 없습니다.
+        </div>
+      )}
+    </>
   );
 };
 
