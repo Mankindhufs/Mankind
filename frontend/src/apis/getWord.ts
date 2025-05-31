@@ -1,11 +1,11 @@
 import { axiosInstance } from './instance';
 
 export const getWord = async (word: string) => {
-  const res = await axiosInstance.get('/getFinancialTermMeaning', {
+  const res = await axiosInstance.get('/api/dictionary', {
     params: {
-      term: word,
+      keyword: word,
     },
   });
 
-  return res;
+  return res.data;
 };

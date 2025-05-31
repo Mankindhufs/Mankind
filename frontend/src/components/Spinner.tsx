@@ -1,9 +1,9 @@
 import { SyncLoader } from 'react-spinners';
 
-const Spinner = () => {
+const Spinner = ({ size }: { size?: number }) => {
   return (
     <div>
-      <SyncLoader />
+      <SyncLoader size={size} />
     </div>
   );
 };

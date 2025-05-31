@@ -84,3 +84,9 @@ export interface SidebarProps {
   만기평가일: string;
   만기일: string;
 }
+
+// 단어검색 결과
+export interface WordModalProps {
+  term: string;
+  definition: string;
+}

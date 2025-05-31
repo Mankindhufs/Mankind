@@ -11,6 +11,7 @@ export default {
         grayBorder: '#CBCBCB',
         grayIcon: '#969696',
         grayBackground: '#F4F4F4',
+        modalBackground: 'rgba(0, 0, 0, 0.55)',
       },
       keyframes: {
         showAlert: {
