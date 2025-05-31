@@ -11,7 +11,6 @@ export const fileSave = (file: File) => {
     };
 
     localStorage.setItem('uploadedPDF', JSON.stringify(fileMeta));
-    console.log(savedfile);
   };
 
   reader.readAsDataURL(file);
