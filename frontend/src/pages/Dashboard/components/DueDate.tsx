@@ -12,7 +12,7 @@ const DueDate = ({
       {/* 만기평가일 */}
       <div className='flex flex-col gap-2'>
         <p className='font-semibold text-sm'>만기평가일</p>
-        <p className='text-end text-xl p-3 border-4 border-solid border-mainGreen'>
+        <p className='text-end text-xl p-3 border-4 border-solid border-mainGreen rounded-md'>
           {convertDateString(maturityDate)}
         </p>
       </div>
