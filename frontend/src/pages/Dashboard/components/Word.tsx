@@ -11,7 +11,7 @@ const Word = ({
   word: string;
   onButtonClick: () => void;
 }) => {
-  const { result, isPending } = useGetWord(word);
+  const { result, isPending, isError } = useGetWord(word);
   const [showWordModal, setShowWordModal] = useState<boolean>(false);
 
   const handleClickShowModal = () => {
@@ -24,6 +24,10 @@ const Word = ({
         {isPending ? (
           <div className='w-full text-center text-gray-400 text-sm'>
             검색중...
+          </div>
+        ) : isError ? (
+          <div className='w-full text-center text-gray-400 text-sm'>
+            검색 결과를 불러올 수 없습니다.
           </div>
         ) : !result ? (
           <>
