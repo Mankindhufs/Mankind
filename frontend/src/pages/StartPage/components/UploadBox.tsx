@@ -95,12 +95,6 @@ const UploadBox = () => {
   const handleHideAlert = () => {
     if (showAlert && animation === 'animate-showAlert') {
       setAnimation('animate-hideAlert');
-
-      setTimeout(() => {
-        setShowAlert(false);
-        setErrorMessage('');
-        setAnimation('');
-      }, 1000);
     }
   };
 
@@ -113,6 +107,7 @@ const UploadBox = () => {
           alertMessage='파일을 업로드할 수 없습니다.'
           errorMessage={errorMessage}
           hideAlertFunction={handleHideAlert}
+          setAlert={setShowAlert}
         />
       )}
       <div className='flex flex-col items-center gap-4 w-[100%] h-[55%] max-h-[400px]'>

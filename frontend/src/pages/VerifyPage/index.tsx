@@ -239,13 +239,15 @@ const VerifyPage: React.FC = () => {
 
   // 애니메이션이 끝난 후 showAlert를 false로 변경
   const handleHideAlert = () => {
+    // if (showAlert && animation == 'animate-showAlert') {
+    //   setAnimation('animate-hideAlert');
+
+    //   setTimeout(() => {
+    //     setShowAlert(false);
+    //   }, 900);
+    // }
     if (showAlert && animation === 'animate-showAlert') {
       setAnimation('animate-hideAlert');
-
-      setTimeout(() => {
-        setShowAlert(false);
-        setAnimation('');
-      }, 1000);
     }
   };
 
@@ -260,6 +262,7 @@ const VerifyPage: React.FC = () => {
               alertMessage='수정을 완료할 수 없습니다.'
               errorMessage={errorMessage}
               hideAlertFunction={handleHideAlert}
+              setAlert={setShowAlert}
             />
           )}
           <div className='grid grid-cols-12 grid-rows-auto gap-4 h-full px-5 pb-5'>
