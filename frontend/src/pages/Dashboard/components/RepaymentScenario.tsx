@@ -31,7 +31,7 @@ import { PdfValue, RoundKey } from '../../../typings/types';
 // ];
 
 
-const RepaymentScenario: React.FC = () => {
+const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal }) => {
   const file = getFileValue() as PdfValue | null;
   if (!file) {
     return (
@@ -60,35 +60,50 @@ const RepaymentScenario: React.FC = () => {
 
   return (
     <DashboardItem title="만기 상환 시나리오">
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart
-          data={entries}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="period" />
-          <YAxis domain={[50, 'dataMax']} unit="%" />
-          <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
-          <Legend verticalAlign="top" />
-          <Line
-            type="monotone"
-            dataKey="early"
-            name="조기상환 충족 조건"
-            stroke="#000000"
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-            connectNulls={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="maturity"
-            name="만기상환 되는 경우"
-            stroke="#FF0000"
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+
+      <div className="flex flex-col h-full">
+        {/* 차트 영역 (높이 200px, flex-1) */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={entries} margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="period" />
+              <YAxis domain={[50, 'dataMax']} unit="%" />
+              <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
+              <Legend 
+                verticalAlign="top"
+                wrapperStyle={{ top: 0, left: 0 }} 
+                />
+              <Line
+                type="monotone"
+                dataKey="early"
+                name="조기상환 충족 조건"
+                stroke="#000000"
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="maturity"
+                name="만기상환 되는 경우"
+                stroke="#FF0000"
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* onOpenModal이 전달된 경우에만 보여줄 버튼 */}
+        {onOpenModal && (
+          <button
+            onClick={onOpenModal}
+            className="mt-2 px-4 py-2 bg-mainGreen text-white rounded-md self-center"
+          >
+            📈 크게 보기
+          </button>
+        )}
+      </div>
     </DashboardItem>
   );
 };

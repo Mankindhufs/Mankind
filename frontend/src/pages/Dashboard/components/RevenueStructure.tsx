@@ -25,9 +25,10 @@ import { PdfValue, RoundKey } from '../../../typings/types';
 //   { period: '5차상환', yield: 123.25 },
 // ];
 
-const RevenueStructure: React.FC = () => {
+
+const RevenueStructure: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal }) => {
   const file = getFileValue() as PdfValue | null;
-  if (!file) {
+  if (!file) { 
     return (
       <DashboardItem title="수익구조 분석 차트">
         <div className="text-center text-gray-500">데이터가 없습니다.</div>
@@ -47,26 +48,60 @@ const RevenueStructure: React.FC = () => {
 
   return (
     <DashboardItem title="수익구조 분석 차트">
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart
-          data={data}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+
+      {/*
+        main 영역이 곧 children 위치이므로,
+        여기서부터 flex flex-col h-full 구조를 줘서
+        "차트 영역" + "버튼" 을 쌓는다.
+      */}
+      <div className="flex flex-col h-full">
+        {/* 1) 차트: 높이를 200px로 줄이고, flex-1을 줘서 남은 공간을 최대한 채우도록 */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart
+              data={data}
+              margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="period" />
+              <YAxis domain={[50, 'dataMax']} unit="%" />
+              <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
+              <Legend 
+                verticalAlign="top"
+                  wrapperStyle={{ top: 0, left: 0 }} 
+                />
+
+
+              <Line
+                type="monotone"
+                dataKey="yield"
+                name="수익률"
+                stroke="#000000"
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* onOpenModal이 전달된 경우에만 버튼을 렌더 */}
+        {onOpenModal && (
+          <button
+            onClick={onOpenModal}
+            className="mt-2 px-4 py-2 bg-mainGreen text-white rounded-md self-center"
           >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="period" />
-          <YAxis domain={[50, 'dataMax']} unit="%" />
-          <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
-          <Legend verticalAlign="top" />
-          <Line
-            type="monotone"
-            dataKey="yield"
-            name="수익률"
-            stroke="#000000"
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-            />
-        </LineChart>
-      </ResponsiveContainer>
+            📊 크게 보기
+          </button>
+        )}
+
+          {/* 2) 버튼: flex-col 하단에, 가운데 정렬(self-center) + 위쪽 여백(mt-2) */}
+          {/* <button
+            onClick={onOpenModal}
+            className="mt-2 px-4 py-2 bg-mainGreen text-white rounded-md self-center"
+          >
+            📊 크게 보기
+          </button> */}
+      </div>
     </DashboardItem>
   );
 };
