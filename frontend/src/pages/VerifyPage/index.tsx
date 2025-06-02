@@ -14,7 +14,6 @@ const VerifyPage: React.FC = () => {
   // 데이터 로딩 훅
   const data: PdfValue | null = getFileValue();
 
-  console.log(data);
   // ‘수정 모드’ 상태 추가
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedData, setEditedData] = useState<PdfValue | null>(() => {
