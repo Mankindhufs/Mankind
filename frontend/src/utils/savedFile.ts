@@ -1,7 +1,7 @@
 import { PdfValue } from '../typings/types';
 
 // 추출값 localStorage에 저장
-export const setFileValue = (fileValue: PdfValue) => {
+export const setFileValue = (fileValue: PdfValue | null) => {
   localStorage.setItem('savedFile', JSON.stringify(fileValue));
 };
 

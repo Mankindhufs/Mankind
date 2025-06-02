@@ -9,14 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import { isValidNumber } from '../../utils/validationCheck';
 import Alert from '../../components/Alert';
 import { formattedDate } from '../../utils/format';
-import { defaultFileValue } from '../../constants/defaultFileValue';
 
 const VerifyPage: React.FC = () => {
   // 데이터 로딩 훅
-  const data = getFileValue();
+  const data: PdfValue | null = getFileValue();
+
+  console.log(data);
   // ‘수정 모드’ 상태 추가
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editedData, setEditedData] = useState<PdfValue>(() => {
+  const [editedData, setEditedData] = useState<PdfValue | null>(() => {
     if (data) {
       return {
         기초자산: data.기초자산,
@@ -56,7 +57,7 @@ const VerifyPage: React.FC = () => {
         최대손실만기조건비율: data.최대손실만기조건비율,
       };
     } else {
-      return defaultFileValue;
+      return null;
     }
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -94,31 +95,37 @@ const VerifyPage: React.FC = () => {
     name?: string,
     date?: Date | null,
   ): void => {
-    if (e) {
-      const path = e.target.name;
-      const value = e.target.value;
+    if (editedData) {
+      if (e) {
+        const path = e.target.name;
+        const value = e.target.value;
 
-      // 자동조기상환만 별도로 처리
-      if (!path.includes('자동조기상환')) {
-        setEditedData({ ...editedData, [path]: value });
-      } else {
-        const updated = editedNestedValue(editedData.자동조기상환, path, value);
-        setEditedData({ ...editedData, 자동조기상환: updated });
-      }
-    } else {
-      // Date값 처리
-      if (name && date) {
-        const string_date = formattedDate(date);
-
-        if (!name.includes('자동조기상환')) {
-          setEditedData({ ...editedData, [name]: string_date });
+        // 자동조기상환만 별도로 처리
+        if (!path.includes('자동조기상환')) {
+          setEditedData({ ...editedData, [path]: value });
         } else {
           const updated = editedNestedValue(
             editedData.자동조기상환,
-            name,
-            string_date,
+            path,
+            value,
           );
           setEditedData({ ...editedData, 자동조기상환: updated });
+        }
+      } else {
+        // Date값 처리
+        if (name && date) {
+          const string_date = formattedDate(date);
+
+          if (!name.includes('자동조기상환')) {
+            setEditedData({ ...editedData, [name]: string_date });
+          } else {
+            const updated = editedNestedValue(
+              editedData.자동조기상환,
+              name,
+              string_date,
+            );
+            setEditedData({ ...editedData, 자동조기상환: updated });
+          }
         }
       }
     }
@@ -128,51 +135,44 @@ const VerifyPage: React.FC = () => {
   const isValid = () => {
     let alertMessage = '';
 
-    // 자동조기상환 날짜 형식 확인
-    // const hasInvalidDate = Object.entries(editedData.자동조기상환).some(
-    //   ([_, value]) => !isValidDate(value.자동조기상환평가일),
-    // );
+    if (editedData) {
+      // 자동조기상환 숫자 형식 확인
+      const hasInvalidNumber = Object.entries(editedData.자동조기상환).some(
+        ([_, value]) =>
+          !isValidNumber(value.자동조기상환성립조건) ||
+          !isValidNumber(value.자동조기상환수익률),
+      );
 
-    // 자동조기상환 숫자 형식 확인
-    const hasInvalidNumber = Object.entries(editedData.자동조기상환).some(
-      ([_, value]) =>
-        !isValidNumber(value.자동조기상환성립조건) ||
-        !isValidNumber(value.자동조기상환수익률),
-    );
+      // 자동조기상환 제외한 나머지 공백 확인
+      const hasEmpty = Object.entries(editedData).some(([key, value]) => {
+        if (key !== '자동조기상환') {
+          if (typeof value === 'string') return value.trim() === '';
+        }
+        return false;
+      });
 
-    // 자동조기상환 제외한 나머지 공백 확인
-    const hasEmpty = Object.entries(editedData).some(([key, value]) => {
-      if (key !== '자동조기상환') {
-        if (typeof value === 'string') return value.trim() === '';
+      // 자동조기상환 공백 확인
+      const hasEmptyInNested = Object.entries(editedData.자동조기상환).some(
+        ([_, value]) =>
+          value.자동조기상환성립조건.toString() === '' ||
+          value.자동조기상환수익률.toString() === '' ||
+          value.자동조기상환평가일 === '',
+      );
+
+      if (
+        !isValidNumber(editedData.최대손실만기조건비율) ||
+        !isValidNumber(editedData.낙인구간) ||
+        hasInvalidNumber
+      ) {
+        alertMessage += '숫자 형식이 아닙니다.';
       }
-      return false;
-    });
 
-    // 자동조기상환 공백 확인
-    const hasEmptyInNested = Object.entries(editedData.자동조기상환).some(
-      ([_, value]) =>
-        value.자동조기상환성립조건.toString() === '' ||
-        value.자동조기상환수익률.toString() === '' ||
-        value.자동조기상환평가일 === '',
-    );
-
-    // if (!isValidDate(editedData.만기평가일) || hasInvalidDate) {
-    //   alertMessage += '날짜 형식이 아닙니다.';
-    // }
-
-    if (
-      !isValidNumber(editedData.최대손실만기조건비율) ||
-      !isValidNumber(editedData.낙인구간) ||
-      hasInvalidNumber
-    ) {
-      alertMessage += '숫자 형식이 아닙니다.';
-    }
-
-    if (hasEmpty || hasEmptyInNested) {
-      if (alertMessage != '') {
-        alertMessage += '/공백을 포함할 수 없습니다.';
-      } else {
-        alertMessage += '공백을 포함할 수 없습니다.';
+      if (hasEmpty || hasEmptyInNested) {
+        if (alertMessage != '') {
+          alertMessage += '/공백을 포함할 수 없습니다.';
+        } else {
+          alertMessage += '공백을 포함할 수 없습니다.';
+        }
       }
     }
 
@@ -181,59 +181,71 @@ const VerifyPage: React.FC = () => {
 
   // 수정 끝났을 때 실행 - 최종 데이터 localStorage에 저장
   const handleFinishEdit = () => {
-    const newData = {
-      기초자산: data.기초자산,
-      낙인구간: editedData.낙인구간,
-      만기일: editedData.만기일,
-      만기평가일: editedData.만기평가일,
-      위험등급: data.위험등급,
-      손실조건버전: data.손실조건버전,
-      자동조기상환: {
-        '1차': {
-          자동조기상환평가일: editedData.자동조기상환['1차'].자동조기상환평가일,
-          자동조기상환성립조건:
-            editedData.자동조기상환['1차'].자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환['1차'].자동조기상환수익률,
+    if (editedData) {
+      const newData = {
+        기초자산: editedData.기초자산,
+        낙인구간: editedData.낙인구간,
+        만기일: editedData.만기일,
+        만기평가일: editedData.만기평가일,
+        위험등급: editedData.위험등급,
+        손실조건버전: editedData.손실조건버전,
+        자동조기상환: {
+          '1차': {
+            자동조기상환평가일:
+              editedData.자동조기상환['1차'].자동조기상환평가일,
+            자동조기상환성립조건:
+              editedData.자동조기상환['1차'].자동조기상환성립조건,
+            자동조기상환수익률:
+              editedData.자동조기상환['1차'].자동조기상환수익률,
+          },
+          '2차': {
+            자동조기상환평가일:
+              editedData.자동조기상환['2차'].자동조기상환평가일,
+            자동조기상환성립조건:
+              editedData.자동조기상환['2차'].자동조기상환성립조건,
+            자동조기상환수익률:
+              editedData.자동조기상환['2차'].자동조기상환수익률,
+          },
+          '3차': {
+            자동조기상환평가일:
+              editedData.자동조기상환['3차'].자동조기상환평가일,
+            자동조기상환성립조건:
+              editedData.자동조기상환['3차'].자동조기상환성립조건,
+            자동조기상환수익률:
+              editedData.자동조기상환['3차'].자동조기상환수익률,
+          },
+          '4차': {
+            자동조기상환평가일:
+              editedData.자동조기상환['4차'].자동조기상환평가일,
+            자동조기상환성립조건:
+              editedData.자동조기상환['4차'].자동조기상환성립조건,
+            자동조기상환수익률:
+              editedData.자동조기상환['4차'].자동조기상환수익률,
+          },
+          '5차': {
+            자동조기상환평가일:
+              editedData.자동조기상환['5차'].자동조기상환평가일,
+            자동조기상환성립조건:
+              editedData.자동조기상환['5차'].자동조기상환성립조건,
+            자동조기상환수익률:
+              editedData.자동조기상환['5차'].자동조기상환수익률,
+          },
         },
-        '2차': {
-          자동조기상환평가일: editedData.자동조기상환['2차'].자동조기상환평가일,
-          자동조기상환성립조건:
-            editedData.자동조기상환['2차'].자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환['2차'].자동조기상환수익률,
-        },
-        '3차': {
-          자동조기상환평가일: editedData.자동조기상환['3차'].자동조기상환평가일,
-          자동조기상환성립조건:
-            editedData.자동조기상환['3차'].자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환['3차'].자동조기상환수익률,
-        },
-        '4차': {
-          자동조기상환평가일: editedData.자동조기상환['4차'].자동조기상환평가일,
-          자동조기상환성립조건:
-            editedData.자동조기상환['4차'].자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환['4차'].자동조기상환수익률,
-        },
-        '5차': {
-          자동조기상환평가일: editedData.자동조기상환['5차'].자동조기상환평가일,
-          자동조기상환성립조건:
-            editedData.자동조기상환['5차'].자동조기상환성립조건,
-          자동조기상환수익률: editedData.자동조기상환['5차'].자동조기상환수익률,
-        },
-      },
-      종목명: data.종목명,
-      최대손실만기조건비율: editedData.최대손실만기조건비율,
-    };
-    const errors = isValid();
+        종목명: editedData.종목명,
+        최대손실만기조건비율: editedData.최대손실만기조건비율,
+      };
+      const errors = isValid();
 
-    // 에러메세지가 없어야 대시보드 페이지로 이동 가능
-    if (errors) {
-      setErrorMessage(errors);
-      setShowAlert(true);
-      setAnimation('animate-showAlert');
-    } else {
-      setFileValue(newData); // localStorage 저장
-      setIsEditing(false);
-      handleHideAlert();
+      // 에러메세지가 없어야 대시보드 페이지로 이동 가능
+      if (errors) {
+        setErrorMessage(errors);
+        setShowAlert(true);
+        setAnimation('animate-showAlert');
+      } else {
+        setFileValue(newData); // localStorage 저장
+        setIsEditing(false);
+        handleHideAlert();
+      }
     }
   };
 
@@ -253,7 +265,7 @@ const VerifyPage: React.FC = () => {
 
   return (
     <>
-      {data ? (
+      {editedData ? (
         <div className='h-[calc(100vh-64px)] mx-auto'>
           {/* 검증 통과 못할 시 경고창 */}
           {showAlert && (
@@ -406,8 +418,14 @@ const VerifyPage: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className='absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] w-full text-center text-grayBorder'>
-          데이터를 불러올 수 없습니다.
+        <div className='absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] w-full text-center'>
+          <p className='mb-5'>데이터를 불러올 수 없습니다.</p>
+          <button
+            className='text-sm h-12 bg-mainGreen rounded-md w-[20%] min-w-52 max-w-72 p-2 text-white hover:bg-green-600'
+            onClick={() => navigate('/')}
+          >
+            파일 재업로드하기
+          </button>
         </div>
       )}
     </>
