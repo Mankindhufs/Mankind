@@ -41,22 +41,38 @@ const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal
     );
   }
 
-  const knockIn = file.낙인구간;
+  const knockIn = Number(file.낙인구간);
 
   // 1~5차: ‘조기상환 충족 조건’(condition) vs ‘만기상환 되는 경우’(early−5)
-  const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map(
-    (key) => ({
+  // const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map(
+  //   (key) => ({
+
+
+  //     period: `${key} 조기상환`,
+  //     early: file.자동조기상환[key].자동조기상환성립조건,
+  //     maturity: file.자동조기상환[key].자동조기상환성립조건 - 5,
+  //   })
+  // );
+ const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map((key) => {
+    const rawEarly = file.자동조기상환[key].자동조기상환성립조건;
+    // rawEarly가 문자열일 수 있으므로 Number()로 감싸서 숫자로 변환
+    const earlyNum = Number(rawEarly);
+    return {
       period: `${key} 조기상환`,
-      early: file.자동조기상환[key].자동조기상환성립조건,
-      maturity: file.자동조기상환[key].자동조기상환성립조건 - 5,
-    })
-  );
+      early: earlyNum,
+      maturity: earlyNum - 5,  // 숫자(earlyNum) - 5
+    };
+  });
+
+
   // 마지막 만기 포인트 추가
   entries.push({
     period: '만기',
     early: knockIn,
     maturity: knockIn + 5,
   });
+  // 디버깅용: entries 배열을 콘솔에 찍어보자
+  console.log('▶ RepaymentScenario entries:', entries);
 
   return (
     <DashboardItem title="만기 상환 시나리오">
@@ -69,7 +85,9 @@ const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="period" />
               <YAxis domain={[50, 'dataMax']} unit="%" />
+
               <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
+                
               <Legend 
                 verticalAlign="top"
                 wrapperStyle={{ top: 0, left: 0 }} 

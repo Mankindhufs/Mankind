@@ -41,7 +41,7 @@ const Dashboard = () => {
           <Modal
             isOpen={isRevenueModalOpen}
             onClose={() => setIsRevenueModalOpen(false)}
-            title="수익구조 분석 차트"
+
             >
             {/* 모달 안에서는 높이를 좀 더 키워서 렌더 */}
             <div style={{ width: '100%', height: 400 }}>
@@ -52,7 +52,7 @@ const Dashboard = () => {
           <Modal
             isOpen={isScenarioModalOpen}
             onClose={() => setIsScenarioModalOpen(false)}
-            title="만기 상환 시나리오"
+
             >
             <div style={{ width: '100%', height: 400 }}>
               <RepaymentScenario />
