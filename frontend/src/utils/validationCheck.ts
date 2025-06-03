@@ -1,6 +1,6 @@
 // 입력값이 숫자인지 확인
 export const isValidNumber = (value: number) => {
-  const str_value = value.toString();
+  const str_value = value.toString().trim();
   const checkNumber = /^\d+(\.\d+)?$/;
   return checkNumber.test(str_value);
 };

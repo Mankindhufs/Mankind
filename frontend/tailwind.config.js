@@ -40,8 +40,8 @@ export default {
         },
       },
       animation: {
-        showAlert: 'showAlert 1s',
-        hideAlert: 'hideAlert 1s',
+        showAlert: 'showAlert 1s forwards',
+        hideAlert: 'hideAlert 1s forwards',
       },
     },
   },

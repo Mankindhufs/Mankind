@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getWord } from '../../../apis/getWord';
 
 export const useGetWord = (word: string) => {
-  const { data, isPending } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ['word', word],
     queryFn: () => getWord(word),
     enabled: !!word,
@@ -12,5 +12,5 @@ export const useGetWord = (word: string) => {
     return { result: false, isPending };
   }
 
-  return { result: data, isPending };
+  return { result: data, isPending, isError };
 };
