@@ -14,8 +14,6 @@ import {
 import { getFileValue } from '../../../utils/savedFile';
 import { PdfValue, RoundKey } from '../../../typings/types';
 
-
-
 // // 더미 기준치 (예: 낙인구간)
 // // 실제 데이터가 없으니 예시로 50% 고정
 // const knockInRatio = 50;
@@ -30,13 +28,14 @@ import { PdfValue, RoundKey } from '../../../typings/types';
 //   { period: '만기',         early: knockInRatio, maturity: knockInRatio + 5 },
 // ];
 
-
-const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal }) => {
+const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({
+  onOpenModal,
+}) => {
   const file = getFileValue() as PdfValue | null;
   if (!file) {
     return (
-      <DashboardItem title="만기 상환 시나리오">
-        <div className="text-center text-gray-500">데이터가 없습니다.</div>
+      <DashboardItem title='만기 상환 시나리오'>
+        <div className='text-center text-gray-500'>데이터가 없습니다.</div>
       </DashboardItem>
     );
   }
@@ -47,23 +46,23 @@ const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal
   // const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map(
   //   (key) => ({
 
-
   //     period: `${key} 조기상환`,
   //     early: file.자동조기상환[key].자동조기상환성립조건,
   //     maturity: file.자동조기상환[key].자동조기상환성립조건 - 5,
   //   })
   // );
- const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map((key) => {
-    const rawEarly = file.자동조기상환[key].자동조기상환성립조건;
-    // rawEarly가 문자열일 수 있으므로 Number()로 감싸서 숫자로 변환
-    const earlyNum = Number(rawEarly);
-    return {
-      period: `${key} 조기상환`,
-      early: earlyNum,
-      maturity: earlyNum - 5,  // 숫자(earlyNum) - 5
-    };
-  });
-
+  const entries = (['1차', '2차', '3차', '4차', '5차'] as RoundKey[]).map(
+    (key) => {
+      const rawEarly = file.자동조기상환[key].자동조기상환성립조건;
+      // rawEarly가 문자열일 수 있으므로 Number()로 감싸서 숫자로 변환
+      const earlyNum = Number(rawEarly);
+      return {
+        period: `${key} 조기상환`,
+        early: earlyNum,
+        maturity: earlyNum - 5, // 숫자(earlyNum) - 5
+      };
+    },
+  );
 
   // 마지막 만기 포인트 추가
   entries.push({
@@ -75,36 +74,35 @@ const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal
   console.log('▶ RepaymentScenario entries:', entries);
 
   return (
-    <DashboardItem title="만기 상환 시나리오">
-
-      <div className="flex flex-col h-full">
-        {/* 차트 영역 (높이 200px, flex-1) */}
-        <div className="flex-1">
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={entries} margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="period" />
-              <YAxis domain={[50, 'dataMax']} unit="%" />
+    <DashboardItem title='만기 상환 시나리오'>
+      <div className='flex flex-col h-full'>
+        {/* 차트 영역 (flex-1) */}
+        <div className='flex-1 min-h-0'>
+          <ResponsiveContainer width='100%' height='100%'>
+            <LineChart
+              data={entries}
+              margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+            >
+              <CartesianGrid strokeDasharray='3 3' />
+              <XAxis dataKey='period' />
+              <YAxis domain={[50, 'dataMax']} unit='%' />
 
               <Tooltip formatter={(val: number) => `${val.toFixed(2)}%`} />
-                
-              <Legend 
-                verticalAlign="top"
-                wrapperStyle={{ top: 0, left: 0 }} 
-                />
+
+              <Legend verticalAlign='top' wrapperStyle={{ top: 0, left: 0 }} />
               <Line
-                type="monotone"
-                dataKey="early"
-                name="조기상환 충족 조건"
-                stroke="#000000"
+                type='monotone'
+                dataKey='early'
+                name='조기상환 충족 조건'
+                stroke='#000000'
                 dot={{ r: 4 }}
                 activeDot={{ r: 6 }}
               />
               <Line
-                type="monotone"
-                dataKey="maturity"
-                name="만기상환 되는 경우"
-                stroke="#FF0000"
+                type='monotone'
+                dataKey='maturity'
+                name='만기상환 되는 경우'
+                stroke='#FF0000'
                 dot={{ r: 4 }}
                 activeDot={{ r: 6 }}
               />
@@ -116,7 +114,7 @@ const RepaymentScenario: React.FC<{ onOpenModal?: () => void }> = ({ onOpenModal
         {onOpenModal && (
           <button
             onClick={onOpenModal}
-            className="mt-2 px-4 py-2 bg-mainGreen text-white rounded-md self-center"
+            className='h-9 p-2 w-full text-sm bg-grayBackground rounded-md hover:bg-mainGreen hover:text-white duration-100 ease-linear transition'
           >
             📈 크게 보기
           </button>

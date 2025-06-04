@@ -9,7 +9,7 @@ const IndexChartButton = ({
 }) => {
   return (
     <button
-      className={`text-xs bg-grayBackground px-2 py-1 rounded-[5px] cursor-pointer ${active === value ? 'bg-mainGreen' : ''}`}
+      className={`text-xs bg-grayBackground px-2 py-1 rounded-[5px] cursor-pointer duration-100 ease-linear transition ${active === value ? 'bg-mainGreen' : ''}`}
       name={value}
       onClick={onClickFunction}
     >
