@@ -27,22 +27,22 @@ const Dashboard = () => {
 
           {/* 수익구조 분석 차트 */}
           <div className='col-span-4 row-start-3 row-end-5'>
-            <RevenueStructure onOpenModal={() => setIsRevenueModalOpen(true)}/>
-
+            <RevenueStructure onOpenModal={() => setIsRevenueModalOpen(true)} />
           </div>
 
           {/* 만기 상환 시나리오 */}
-          <div className="col-span-5 row-start-3 row-end-5">
+          <div className='col-span-5 row-start-3 row-end-5'>
             {/* onOpenModal을 넘겨주므로, 컴포넌트 안에 “크게 보기” 버튼이 표시됨 */}
-            <RepaymentScenario onOpenModal={() => setIsScenarioModalOpen(true)} />
+            <RepaymentScenario
+              onOpenModal={() => setIsScenarioModalOpen(true)}
+            />
           </div>
 
           {/* 이하 모달 렌더링 */}
           <Modal
             isOpen={isRevenueModalOpen}
             onClose={() => setIsRevenueModalOpen(false)}
-
-            >
+          >
             {/* 모달 안에서는 높이를 좀 더 키워서 렌더 */}
             <div style={{ width: '100%', height: 400 }}>
               <RevenueStructure />
@@ -52,13 +52,11 @@ const Dashboard = () => {
           <Modal
             isOpen={isScenarioModalOpen}
             onClose={() => setIsScenarioModalOpen(false)}
-
-            >
+          >
             <div style={{ width: '100%', height: 400 }}>
               <RepaymentScenario />
             </div>
           </Modal>
-
         </div>
       ) : (
         <div className='absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] w-full text-center text-grayBorder'>
