@@ -30,9 +30,7 @@ const Layout = () => {
                 <div className='self-end flex items-center min-w-[800px] justify-end bg-white'>
                   <PiWarningFill size={20} className='text-yellow-400' />
                   <p className='font-bold text-red my-1'>
-                    본 대시보드는 파생상품 투자를 돕기 위한 어시스턴트
-                    프로그램에 불과하며, 모든 투자의 결정과 책임은 본인에게
-                    있습니다.
+                    본 대시보드는 학습을 돕기 위한 프로그램입니다.
                   </p>
                 </div>
               )}
